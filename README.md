@@ -1,0 +1,2 @@
+# Checkers
+Two-player checkers
