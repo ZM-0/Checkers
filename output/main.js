@@ -14,6 +14,75 @@ var Colour;
 })(Colour || (Colour = {}));
 // ====================================================================================================
 // 
+// Board
+// 
+// ====================================================================================================
+/**
+ * An 8x8 grid gameboard of cells.
+ */
+class Board {
+    /**
+     * The board dimensions.
+     */
+    SIZE = 8;
+    /**
+     * The cells in the board.
+     */
+    cells = [];
+    /**
+     * Sets up the cells in the board.
+     */
+    constructor() {
+        this.createCells();
+        this.assignAdjacentCells();
+    }
+    /**
+     * Creates the cells in the board.
+     */
+    createCells() {
+        for (let row = 0; row < this.SIZE; row++) {
+            this.cells.push([]);
+            for (let column = 0; column < this.SIZE; column++) {
+                this.cells[row].push(new Cell());
+            }
+        }
+    }
+    /**
+     * Assigns the diagonally adjacent cells to each cell.
+     */
+    assignAdjacentCells() {
+        for (let row = 0; row < this.SIZE; row++) {
+            for (let column = 0; column < this.SIZE; column++) {
+                const adjacentCells = [
+                    [
+                        row > 0 && column > 0 ? this.cells[row - 1][column - 1] : null,
+                        row > 0 && column < this.SIZE - 1 ? this.cells[row - 1][column + 1] : null
+                    ],
+                    [
+                        row < this.SIZE - 1 && column > 0 ? this.cells[row + 1][column - 1] : null,
+                        row < this.SIZE - 1 && column < this.SIZE - 1 ? this.cells[row + 1][column + 1] : null
+                    ]
+                ];
+                this.cells[row][column].adjacentCells = adjacentCells;
+            }
+        }
+    }
+    /**
+     * Gets a cell in the board.
+     * @param row The row index.
+     * @param column The column index.
+     * @returns The cell.
+     * @throws RangeError if the indexes are out of bounds.
+     */
+    getCell(row, column) {
+        if (row < 0 || row >= this.SIZE || column < 0 || column >= this.SIZE) {
+            throw new RangeError("Invalid cell row or column");
+        }
+        return this.cells[row][column];
+    }
+}
+// ====================================================================================================
+// 
 // Cell
 // 
 // ====================================================================================================
@@ -24,6 +93,7 @@ class Cell {
     /**
      * The diagonally adjacent cells as a 2D array. The first subarray are cells above,
      * the second subarray are the cells below. The first in each subarray is the left cell.
+     * If an adjacent cell doesn't exist (i.e. corner or edge) the entry is null.
      */
     _adjacentCells = null;
     /**
