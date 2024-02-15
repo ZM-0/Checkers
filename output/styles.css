@@ -7,3 +7,22 @@ html {
 *, *::before, *::after {
     box-sizing: inherit;
 }
+
+body {
+    display: block flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Board Layout */
+
+#board {
+    display: block grid;
+    grid-template-rows: repeat(8, 1fr);
+    grid-template-columns: repeat(8, 1fr);
+    height: 50vmin;
+    width: 50vmin;
+}
