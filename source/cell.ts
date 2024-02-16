@@ -37,10 +37,11 @@ export class Cell {
     }
 
     /**
-     * Sets the top-left cell for this cell. Does nothing if it is already assigned.
+     * Sets the top-left cell for this cell.
+     * @throws Error if it is already assigned.
      */
     public set topLeft(cell: Cell) {
-        if (this._topLeft !== null) return;
+        if (this._topLeft !== null) throw new Error("Top-left cell already assigned");
         this._topLeft = cell;
     }
 
@@ -52,10 +53,11 @@ export class Cell {
     }
 
     /**
-     * Sets the top-right cell for this cell. Does nothing if it is already assigned.
+     * Sets the top-right cell for this cell.
+     * @throws Error if it is already assigned.
      */
     public set topRight(cell: Cell) {
-        if (this._topRight !== null) return;
+        if (this._topRight !== null) throw new Error("Top-right cell already assigned");
         this._topRight = cell;
     }
 
@@ -67,10 +69,11 @@ export class Cell {
     }
 
     /**
-     * Sets the bottom-left cell for this cell. Does nothing if it is already assigned.
+     * Sets the bottom-left cell for this cell.
+     * @throws Error if it is already assigned.
      */
     public set bottomLeft(cell: Cell) {
-        if (this._bottomLeft !== null) return;
+        if (this._bottomLeft !== null) throw new Error("Bottom-left cell already assigned");
         this._bottomLeft = cell;
     }
 
@@ -82,10 +85,11 @@ export class Cell {
     }
 
     /**
-     * Sets the bottom-right cell for this cell. Does nothing if it is already assigned.
+     * Sets the bottom-right cell for this cell.
+     * @throws Error if it is already assigned.
      */
     public set bottomRight(cell: Cell) {
-        if (this._bottomRight !== null) return;
+        if (this._bottomRight !== null) throw new Error("Bottom-right cell already assigned");
         this._bottomRight = cell;
     }
 
@@ -97,26 +101,12 @@ export class Cell {
     }
 
     /**
-     * Sets the token on the cell. Does nothing if there is already a token on it.
+     * Sets the token on the cell, or sets null to remove any token from the cell.
+     * @throws Error if there is already a token on the cell.
      */
-    public set token(token: Token) {
-        if (this._token !== null) return;
+    public set token(token: Token | null) {
+        if (this._token !== null) throw new Error("Can't have two tokens on one cell");
         this._token = token;
-    }
-
-    /**
-     * Checks if the cell has a token.
-     * @returns A boolean indicating if the cell has a token.
-     */
-    public hasToken(): boolean {
-        return this._token !== null;
-    }
-
-    /**
-     * Removes the token from the cell, if any.
-     */
-    public removeToken() {
-        this._token = null;
     }
 
     /**
@@ -125,6 +115,6 @@ export class Cell {
      * @returns A boolean indicating if the given cell is immediately adjacent.
      */
     public isAdjacent(cell: Cell): boolean {
-        return cell === this.topLeft || cell === this.topRight || cell === this.bottomLeft || cell === this.bottomRight;
+        return [this.topLeft, this.topRight, this.bottomLeft, this.bottomRight].includes(cell);
     }
 }

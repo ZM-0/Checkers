@@ -69,7 +69,7 @@ export class Token {
      * Moves the token to another cell and removes it from any previous cell.
      */
     public set cell(cell: Cell) {
-        this._cell?.removeToken();
+        if (this._cell) this._cell!.token = null;
         this._cell = cell;
         this._cell.token = this;
     }
