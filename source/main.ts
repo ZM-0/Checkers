@@ -28,7 +28,7 @@ class Board {
     /**
      * The board dimensions.
      */
-    private SIZE: number = 8;
+    private static SIZE: number = 8;
 
     /**
      * The cells in the board.
@@ -44,13 +44,21 @@ class Board {
     }
 
     /**
+     * Gets the board dimensions.
+     * @returns The board dimensions in cells.
+     */
+    public static getSize(): number {
+        return this.SIZE;
+    }
+
+    /**
      * Creates the cells in the board.
      */
     private createCells() {
-        for (let row: number = 0; row < this.SIZE; row++) {
+        for (let row: number = 0; row < Board.SIZE; row++) {
             this.cells.push([]);
 
-            for (let column: number = 0; column < this.SIZE; column++) {
+            for (let column: number = 0; column < Board.SIZE; column++) {
                 this.cells[row].push(new Cell());
             }
         }
@@ -60,14 +68,14 @@ class Board {
      * Assigns the diagonally adjacent cells to each cell.
      */
     private assignAdjacentCells() {
-        for (let row: number = 0; row < this.SIZE; row++) {
-            for (let column: number = 0; column < this.SIZE; column++) {
+        for (let row: number = 0; row < Board.SIZE; row++) {
+            for (let column: number = 0; column < Board.SIZE; column++) {
                 const cell: Cell = this.cells[row][column];
                 
                 if (row > 0 && column > 0) cell.topLeft = this.cells[row - 1][column - 1];
-                if (row > 0 && column < this.SIZE - 1) cell.topRight = this.cells[row - 1][column + 1];
-                if (row < this.SIZE - 1 && column > 0) cell.bottomLeft = this.cells[row + 1][column - 1];
-                if (row < this.SIZE - 1 && column < this.SIZE - 1) cell.bottomRight = this.cells[row + 1][column + 1];
+                if (row > 0 && column < Board.SIZE - 1) cell.topRight = this.cells[row - 1][column + 1];
+                if (row < Board.SIZE - 1 && column > 0) cell.bottomLeft = this.cells[row + 1][column - 1];
+                if (row < Board.SIZE - 1 && column < Board.SIZE - 1) cell.bottomRight = this.cells[row + 1][column + 1];
             }
         }
     }
@@ -80,7 +88,7 @@ class Board {
      * @throws RangeError if the indexes are out of bounds.
      */
     public getCell(row: number, column: number): Cell {
-        if (row < 0 || row >= this.SIZE || column < 0 || column >= this.SIZE) {
+        if (row < 0 || row >= Board.SIZE || column < 0 || column >= Board.SIZE) {
             throw new RangeError("Invalid cell row or column");
         }
 
@@ -229,6 +237,11 @@ class Cell {
  */
 class Player {
     /**
+     * The initial number of tokens a player has.
+     */
+    private TOKEN_COUNT: number = 12;
+
+    /**
      * The player's colour.
      */
     private COLOUR: Colour;
@@ -236,30 +249,41 @@ class Player {
     /**
      * The player's tokens.
      */
-    private tokens!: Token[];
+    private tokens: Token[] = [];
 
     /**
      * Creates a new player.
      * @param colour The player's colour.
+     * @param board The gameboard.
      */
-    constructor(colour: Colour) {
+    constructor(colour: Colour, board: Board) {
         this.COLOUR = colour;
-        this.createTokens();
+        this.createTokens(board);
     }
 
     /**
-     * Creates the player's tokens and links them to the DOM.
+     * Creates the player's tokens.
+     * @param board The gameboard.
      */
-    private createTokens() {
+    private createTokens(board: Board) {
+        for (let i: number = 0; i < this.TOKEN_COUNT; i++) {
+            const cellIndex: number = (i > 3 && i < 8) ? (41 + i * 2) : (40 + i * 2);
+            const cellRow: number = Math.floor(cellIndex / Board.getSize());
+            const cellColumn: number = cellIndex % Board.getSize();
+            const cell: Cell = board.getCell(cellRow, cellColumn);
 
+            this.tokens.push(new Token(this.COLOUR, cell));
+        }
     }
 
     /**
-     * Checks if the player has lost.
+     * Checks if the player has lost by checking if all tokens are dead or blocked.
      * @returns A boolean indicating if the player has lost.
      */
     public hasLost(): boolean {
-        return false;
+        let aliveCount: number = 0;
+        for (const token of this.tokens) if (token.isAlive) aliveCount++;
+        return aliveCount === 0 || this.isBlocked();
     }
 
     /**
@@ -267,7 +291,13 @@ class Player {
      * @returns A boolean indicating if all the alive tokens can't move.
      */
     private isBlocked(): boolean {
-        return false;
+        const moveValidotor: MoveValidator = new MoveValidator();
+
+        for (const token of this.tokens) {
+            if (token.isAlive && !moveValidotor.isBlocked(token)) return false;
+        }
+
+        return true;
     }
 
     /**
@@ -465,7 +495,7 @@ class MoveValidator {
 
 // Colour the board cells
 
-let colour: Colour = Colour.BLACK;
+let colour: Colour = Colour.WHITE;
 
 for (let row: number = 0; row < 8; row++) {
     for (let column: number = 0; column < 8; column++) {

@@ -24,7 +24,7 @@ class Board {
     /**
      * The board dimensions.
      */
-    SIZE = 8;
+    static SIZE = 8;
     /**
      * The cells in the board.
      */
@@ -37,12 +37,19 @@ class Board {
         this.assignAdjacentCells();
     }
     /**
+     * Gets the board dimensions.
+     * @returns The board dimensions in cells.
+     */
+    static getSize() {
+        return this.SIZE;
+    }
+    /**
      * Creates the cells in the board.
      */
     createCells() {
-        for (let row = 0; row < this.SIZE; row++) {
+        for (let row = 0; row < Board.SIZE; row++) {
             this.cells.push([]);
-            for (let column = 0; column < this.SIZE; column++) {
+            for (let column = 0; column < Board.SIZE; column++) {
                 this.cells[row].push(new Cell());
             }
         }
@@ -51,16 +58,16 @@ class Board {
      * Assigns the diagonally adjacent cells to each cell.
      */
     assignAdjacentCells() {
-        for (let row = 0; row < this.SIZE; row++) {
-            for (let column = 0; column < this.SIZE; column++) {
+        for (let row = 0; row < Board.SIZE; row++) {
+            for (let column = 0; column < Board.SIZE; column++) {
                 const cell = this.cells[row][column];
                 if (row > 0 && column > 0)
                     cell.topLeft = this.cells[row - 1][column - 1];
-                if (row > 0 && column < this.SIZE - 1)
+                if (row > 0 && column < Board.SIZE - 1)
                     cell.topRight = this.cells[row - 1][column + 1];
-                if (row < this.SIZE - 1 && column > 0)
+                if (row < Board.SIZE - 1 && column > 0)
                     cell.bottomLeft = this.cells[row + 1][column - 1];
-                if (row < this.SIZE - 1 && column < this.SIZE - 1)
+                if (row < Board.SIZE - 1 && column < Board.SIZE - 1)
                     cell.bottomRight = this.cells[row + 1][column + 1];
             }
         }
@@ -73,7 +80,7 @@ class Board {
      * @throws RangeError if the indexes are out of bounds.
      */
     getCell(row, column) {
-        if (row < 0 || row >= this.SIZE || column < 0 || column >= this.SIZE) {
+        if (row < 0 || row >= Board.SIZE || column < 0 || column >= Board.SIZE) {
             throw new RangeError("Invalid cell row or column");
         }
         return this.cells[row][column];
@@ -202,39 +209,61 @@ class Cell {
  */
 class Player {
     /**
+     * The initial number of tokens a player has.
+     */
+    TOKEN_COUNT = 12;
+    /**
      * The player's colour.
      */
     COLOUR;
     /**
      * The player's tokens.
      */
-    tokens;
+    tokens = [];
     /**
      * Creates a new player.
      * @param colour The player's colour.
+     * @param board The gameboard.
      */
-    constructor(colour) {
+    constructor(colour, board) {
         this.COLOUR = colour;
-        this.createTokens();
+        this.createTokens(board);
     }
     /**
-     * Creates the player's tokens and links them to the DOM.
+     * Creates the player's tokens.
+     * @param board The gameboard.
      */
-    createTokens() {
+    createTokens(board) {
+        for (let i = 0; i < this.TOKEN_COUNT; i++) {
+            const cellIndex = (i > 3 && i < 8) ? (41 + i * 2) : (40 + i * 2);
+            const cellRow = Math.floor(cellIndex / Board.getSize());
+            const cellColumn = cellIndex % Board.getSize();
+            const cell = board.getCell(cellRow, cellColumn);
+            this.tokens.push(new Token(this.COLOUR, cell));
+        }
     }
     /**
-     * Checks if the player has lost.
+     * Checks if the player has lost by checking if all tokens are dead or blocked.
      * @returns A boolean indicating if the player has lost.
      */
     hasLost() {
-        return false;
+        let aliveCount = 0;
+        for (const token of this.tokens)
+            if (token.isAlive)
+                aliveCount++;
+        return aliveCount === 0 || this.isBlocked();
     }
     /**
      * Checks if all the player's tokens are blocked.
      * @returns A boolean indicating if all the alive tokens can't move.
      */
     isBlocked() {
-        return false;
+        const moveValidotor = new MoveValidator();
+        for (const token of this.tokens) {
+            if (token.isAlive && !moveValidotor.isBlocked(token))
+                return false;
+        }
+        return true;
     }
     /**
      * Resets the player and all its tokens.
@@ -406,7 +435,7 @@ class MoveValidator {
 // 
 // ====================================================================================================
 // Colour the board cells
-let colour = Colour.BLACK;
+let colour = Colour.WHITE;
 for (let row = 0; row < 8; row++) {
     for (let column = 0; column < 8; column++) {
         const cell = document.querySelector(`#cell-${row * 8 + column}`);
