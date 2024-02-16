@@ -319,6 +319,25 @@ class Token {
  */
 class MoveValidator {
     /**
+     * Checks if a token is blocked and can't make any moves.
+     * @param token The token to check for.
+     * @returns A boolean indicating if the token is blocked or not.
+     */
+    isBlocked(token) {
+        if (!token.getCell())
+            throw new Error("Can't check if token is blocked unless it's on a cell");
+        return this.getValidMoves(token.getCell()).length === 0;
+    }
+    /**
+     * Checks if a given move is valid.
+     * @param start The token's cell at the start of the move.
+     * @param end The token's cell at the end of the move.
+     * @returns A boolean indicating if the move is valid.
+     */
+    isValidMove(start, end) {
+        return this.getValidMoves(start).includes(end);
+    }
+    /**
      * Gets the valid moves for a token at a given cell.
      * @param start The token's cell at the start of the move.
      * @returns A list of the valid cells to move to.
