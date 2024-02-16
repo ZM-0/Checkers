@@ -198,6 +198,14 @@ class Cell {
     removeToken() {
         this._token = null;
     }
+    /**
+     * Checks if a cell is immediately adjacent to this one.
+     * @param cell The cell to check for.
+     * @returns A boolean indicating if the given cell is immediately adjacent.
+     */
+    isAdjacent(cell) {
+        return cell === this.topLeft || cell === this.topRight || cell === this.bottomLeft || cell === this.bottomRight;
+    }
 }
 // ====================================================================================================
 // 
@@ -321,13 +329,6 @@ class Token {
         return this.COLOUR;
     }
     /**
-     * Gets the token's cell.
-     * @returns The token's cell or null if there isn't one.
-     */
-    getCell() {
-        return this.cell;
-    }
-    /**
      * Resets the token to its initial position and state.
      */
     reset() {
@@ -353,9 +354,9 @@ class MoveValidator {
      * @returns A boolean indicating if the token is blocked or not.
      */
     isBlocked(token) {
-        if (!token.getCell())
+        if (!token.cell)
             throw new Error("Can't check if token is blocked unless it's on a cell");
-        return this.getValidMoves(token.getCell()).length === 0;
+        return this.getValidMoves(token.cell).length === 0;
     }
     /**
      * Checks if a given move is valid.
@@ -426,6 +427,72 @@ class MoveValidator {
             return next1;
         if (next1 && next1.token.getColour() !== start.token.getColour() && next2 && !next2.hasToken())
             return next2;
+        return null;
+    }
+}
+// ====================================================================================================
+// 
+// Move
+// 
+// ====================================================================================================
+/**
+ * Responsible for executing a token move.
+ */
+class Move {
+    /**
+     * The start cell of the move.
+     */
+    start;
+    /**
+     * The end cell of the move.
+     */
+    end;
+    /**
+     * Creates a new move with a start cell.
+     * @param start The token's cell at the move start.
+     */
+    constructor(start) {
+        this.start = start;
+    }
+    /**
+     * Sets the end cell of the move.
+     * @param end The token's cell at the move end.
+     */
+    setEnd(end) {
+        this.end = end;
+    }
+    /**
+     * Executes the move.
+     * @throws Error if the move isn't valid.
+     */
+    execute() {
+        const validator = new MoveValidator();
+        if (!validator.isValidMove(this.start, this.end))
+            throw new Error("Cannot execute invalid move");
+        const token = this.start.token;
+        this.start.removeToken();
+        token.cell = this.end;
+        this.end.token = token;
+        const isKill = !this.start.isAdjacent(this.end);
+        if (isKill) {
+            const middle = this.getMiddle();
+            middle.token.isAlive = false;
+            middle.removeToken();
+        }
+    }
+    /**
+     * Gets the cell jumped over, if any.
+     * @returns The cell jumped over in the move, or null if no cell was jumped over.
+     */
+    getMiddle() {
+        if (this.start.topLeft?.topLeft === this.end)
+            return this.start.topLeft;
+        if (this.start.topRight?.topRight === this.end)
+            return this.start.topRight;
+        if (this.start.bottomLeft?.bottomLeft === this.end)
+            return this.start.bottomLeft;
+        if (this.start.bottomRight?.bottomRight === this.end)
+            return this.start.bottomRight;
         return null;
     }
 }
