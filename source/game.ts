@@ -28,6 +28,11 @@ export class Game {
     private _turn: Colour = Colour.BLACK;
 
     /**
+     * The turn indicator element.
+     */
+    private readonly turnElement: HTMLElement;
+
+    /**
      * The next move.
      */
     public nextMove: Move | null = null;
@@ -39,6 +44,7 @@ export class Game {
         this.board = new Board(this);
         this.blackPlayer = new Player(Colour.BLACK, this.board);
         this.whitePlayer = new Player(Colour.WHITE, this.board);
+        this.turnElement = document.querySelector("#turn-indicator")!;
     }
 
     /**
@@ -53,6 +59,7 @@ export class Game {
      */
     public switchTurn() {
         this._turn = this.turn === Colour.BLACK ? Colour.WHITE : Colour.BLACK;
+        this.turnElement.innerText = this.turn === Colour.BLACK ? "Black's turn" : "White's turn";
     }
 
     /**
