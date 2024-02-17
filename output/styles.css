@@ -4,17 +4,21 @@ html {
     box-sizing: border-box;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: inherit;
 }
 
 body {
     display: block flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color: #F8F9FA;
 }
 
 /* Board Layout */
@@ -25,4 +29,28 @@ body {
     grid-template-columns: repeat(8, 1fr);
     height: 50vmin;
     width: 50vmin;
+    box-shadow: 0 0 20px 5px #6C757D;
+}
+
+/* Board Cell */
+
+#board > div {
+    display: block flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Tokens */
+
+i.token {
+    display: block;
+    font-size: 4.5vmin;
+}
+
+i.token.white-token {
+    color: #FFF;
+}
+
+i.token.black-token {
+    color: #000;
 }

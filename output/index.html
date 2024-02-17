@@ -1,83 +1,95 @@
 <!DOCTYPE html>
 <html lang="en-GB" dir="ltr">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="/images/hockey-puck-solid.svg" type="image/x-icon">
-    <link rel="stylesheet" href="/output/styles.css">
-    <script src="/output/main.js" type="module" async></script>
-    <title>Checkers</title>
-  </head>
-  <body>
-    <header>
-      <h1>Checkers</h1>
-      <h2>Black starts</h2>
-    </header>
-    <section id="board">
-      <div id="cell-0"></div>
-      <div id="cell-1"></div>
-      <div id="cell-2"></div>
-      <div id="cell-3"></div>
-      <div id="cell-4"></div>
-      <div id="cell-5"></div>
-      <div id="cell-6"></div>
-      <div id="cell-7"></div>
-      <div id="cell-8"></div>
-      <div id="cell-9"></div>
-      <div id="cell-10"></div>
-      <div id="cell-11"></div>
-      <div id="cell-12"></div>
-      <div id="cell-13"></div>
-      <div id="cell-14"></div>
-      <div id="cell-15"></div>
-      <div id="cell-16"></div>
-      <div id="cell-17"></div>
-      <div id="cell-18"></div>
-      <div id="cell-19"></div>
-      <div id="cell-20"></div>
-      <div id="cell-21"></div>
-      <div id="cell-22"></div>
-      <div id="cell-23"></div>
-      <div id="cell-24"></div>
-      <div id="cell-25"></div>
-      <div id="cell-26"></div>
-      <div id="cell-27"></div>
-      <div id="cell-28"></div>
-      <div id="cell-29"></div>
-      <div id="cell-30"></div>
-      <div id="cell-31"></div>
-      <div id="cell-32"></div>
-      <div id="cell-33"></div>
-      <div id="cell-34"></div>
-      <div id="cell-35"></div>
-      <div id="cell-36"></div>
-      <div id="cell-37"></div>
-      <div id="cell-38"></div>
-      <div id="cell-39"></div>
-      <div id="cell-40"></div>
-      <div id="cell-41"></div>
-      <div id="cell-42"></div>
-      <div id="cell-43"></div>
-      <div id="cell-44"></div>
-      <div id="cell-45"></div>
-      <div id="cell-46"></div>
-      <div id="cell-47"></div>
-      <div id="cell-48"></div>
-      <div id="cell-49"></div>
-      <div id="cell-50"></div>
-      <div id="cell-51"></div>
-      <div id="cell-52"></div>
-      <div id="cell-53"></div>
-      <div id="cell-54"></div>
-      <div id="cell-55"></div>
-      <div id="cell-56"></div>
-      <div id="cell-57"></div>
-      <div id="cell-58"></div>
-      <div id="cell-59"></div>
-      <div id="cell-60"></div>
-      <div id="cell-61"></div>
-      <div id="cell-62"></div>
-      <div id="cell-63"></div>
-    </section>
-  </body>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="/images/hockey-puck-solid.svg" type="image/x-icon">
+  <link rel="stylesheet" href="/output/styles.css">
+  <script src="https://kit.fontawesome.com/08d4b5217a.js" crossorigin="anonymous"></script>
+  <script src="/output/main.js" type="module" async></script>
+  <title>Checkers</title>
+</head>
+
+<body>
+  <header>
+    <h1>Checkers</h1>
+    <h2>Black starts</h2>
+  </header>
+  <section id="board">
+    <div id="cell-0"></div>
+    <div id="cell-1">
+      <i class="fa-solid fa-hockey-puck token white-token"></i>
+    </div>
+    <div id="cell-2"></div>
+    <div id="cell-3">
+      <i class="fa-solid fa-crown token white-token"></i>
+    </div>
+    <div id="cell-4"></div>
+    <div id="cell-5"></div>
+    <div id="cell-6"></div>
+    <div id="cell-7"></div>
+    <div id="cell-8"></div>
+    <div id="cell-9"></div>
+    <div id="cell-10"></div>
+    <div id="cell-11"></div>
+    <div id="cell-12"></div>
+    <div id="cell-13"></div>
+    <div id="cell-14"></div>
+    <div id="cell-15"></div>
+    <div id="cell-16"></div>
+    <div id="cell-17"></div>
+    <div id="cell-18"></div>
+    <div id="cell-19"></div>
+    <div id="cell-20"></div>
+    <div id="cell-21"></div>
+    <div id="cell-22"></div>
+    <div id="cell-23"></div>
+    <div id="cell-24"></div>
+    <div id="cell-25"></div>
+    <div id="cell-26"></div>
+    <div id="cell-27"></div>
+    <div id="cell-28"></div>
+    <div id="cell-29"></div>
+    <div id="cell-30"></div>
+    <div id="cell-31"></div>
+    <div id="cell-32"></div>
+    <div id="cell-33"></div>
+    <div id="cell-34"></div>
+    <div id="cell-35"></div>
+    <div id="cell-36"></div>
+    <div id="cell-37"></div>
+    <div id="cell-38"></div>
+    <div id="cell-39"></div>
+    <div id="cell-40"></div>
+    <div id="cell-41"></div>
+    <div id="cell-42"></div>
+    <div id="cell-43"></div>
+    <div id="cell-44"></div>
+    <div id="cell-45"></div>
+    <div id="cell-46"></div>
+    <div id="cell-47"></div>
+    <div id="cell-48"></div>
+    <div id="cell-49"></div>
+    <div id="cell-50"></div>
+    <div id="cell-51"></div>
+    <div id="cell-52"></div>
+    <div id="cell-53"></div>
+    <div id="cell-54"></div>
+    <div id="cell-55"></div>
+    <div id="cell-56">
+      <i class="fa-solid fa-hockey-puck token black-token"></i>
+    </div>
+    <div id="cell-57"></div>
+    <div id="cell-58">
+      <i class="fa-solid fa-crown token black-token"></i>
+    </div>
+    <div id="cell-59"></div>
+    <div id="cell-60"></div>
+    <div id="cell-61"></div>
+    <div id="cell-62"></div>
+    <div id="cell-63"></div>
+  </section>
+</body>
+
 </html>

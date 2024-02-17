@@ -5,7 +5,7 @@ let colour = Colour.WHITE;
 for (let row = 0; row < 8; row++) {
     for (let column = 0; column < 8; column++) {
         const cell = document.querySelector(`#cell-${row * 8 + column}`);
-        cell.style.backgroundColor = colour === Colour.BLACK ? "#000" : "#FFF";
+        cell.style.backgroundColor = colour === Colour.BLACK ? "#8C969D" : "#F8F9FA";
         colour = colour === Colour.BLACK ? Colour.WHITE : Colour.BLACK;
     }
     colour = colour === Colour.BLACK ? Colour.WHITE : Colour.BLACK;

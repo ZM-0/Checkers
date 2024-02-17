@@ -8,7 +8,7 @@ let colour: Colour = Colour.WHITE;
 for (let row: number = 0; row < 8; row++) {
     for (let column: number = 0; column < 8; column++) {
         const cell: HTMLDivElement = document.querySelector(`#cell-${row * 8 + column}`)!;
-        cell.style.backgroundColor = colour === Colour.BLACK ? "#000" : "#FFF";
+        cell.style.backgroundColor = colour === Colour.BLACK ? "#8C969D" : "#F8F9FA";
         colour = colour === Colour.BLACK ? Colour.WHITE : Colour.BLACK;
     }
 
