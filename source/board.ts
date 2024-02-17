@@ -1,4 +1,5 @@
 import { Cell, Direction } from "./cell.js";
+import { Token } from "./token.js";
 
 /**
  * A board of cells. Responsible for creating, linking, and retrieving the cells.

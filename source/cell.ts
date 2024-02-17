@@ -11,6 +11,21 @@ export enum Direction {
 }
 
 /**
+ * The possible movement directions.
+ */
+export const directions: Direction[] = [Direction.TOP_LEFT, Direction.TOP_RIGHT, Direction.BOTTOM_RIGHT, Direction.BOTTOM_LEFT];
+
+/**
+ * The upward directions.
+ */
+export const upDirections: Direction[] = [Direction.TOP_LEFT, Direction.TOP_RIGHT];
+
+/**
+ * The downward directions.
+ */
+export const downDirections: Direction[] = [Direction.BOTTOM_LEFT, Direction.BOTTOM_RIGHT];
+
+/**
  * A cell in a board. The cell links to its diagonal neighbours, and keeps track of what token is on it.
  */
 export class Cell {

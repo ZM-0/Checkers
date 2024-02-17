@@ -1,66 +1,67 @@
-import { Direction, directions } from "./cell.js";
+import { directions, downDirections, upDirections } from "./cell.js";
 import { Colour } from "./colour.js";
 /**
  * Gets valid token moves and validates moves.
  */
 export class MoveValidator {
-    // /**
-    //  * Checks if a token is blocked and can't make any moves.
-    //  * @param token The token to check for.
-    //  * @returns A boolean indicating if the token is blocked or not.
-    //  */
-    // public isBlocked(token: Token): boolean {
-    //     if (!token.cell) throw new Error("Can't check if token is blocked unless it's on a cell");
-    //     return this.getValidMoves(token.cell).length === 0;
-    // }
     /**
-     * Checks if a given move is valid.
-     * @param start The token's cell at the start of the move.
-     * @param end The token's cell at the end of the move.
-     * @returns A boolean indicating if the move is valid.
+     * The board being played on.
      */
-    isValidMove(start, end) {
-        return this.getValidMoves(start).includes(end);
+    board;
+    /**
+     * Creates a new move validator.
+     * @param board The board being played on.
+     */
+    constructor(board) {
+        this.board = board;
     }
     /**
-     * Gets the valid moves for a token at a given cell.
-     * @param start The token's cell at the start of the move.
-     * @returns A list of the valid cells to move to.
-     * @throws Error if the start cell doesn't have a token.
+     * Checks if a token is blocked and can't make any moves.
+     * @param token The token to check for.
+     * @returns A boolean indicating if the token is blocked.
      */
-    getValidMoves(start) {
-        if (!start.token)
-            throw new Error("Need token on cell to find moves");
+    isBlocked(token) {
+        return this.getValidMoves(token).length === 0;
+    }
+    /**
+     * Checks if a move for a given token is valid.
+     * @param token The token to check for.
+     * @param end The destination cell for the token.
+     * @returns A boolean indicating if the move is valid.
+     */
+    isValidMove(token, end) {
+        return this.getValidMoves(token).includes(end);
+    }
+    /**
+     * Gets the valid destination cells for a token.
+     * @param token The token to check for.
+     * @returns A list of the valid destination cells.
+     */
+    getValidMoves(token) {
+        const cell = this.board.get(...token.position);
         const moves = [];
+        // Check for moves in all directions
         for (const direction of directions) {
-            if (!this.isValidDirection(direction, start.token))
-                break;
-            const next1 = start.get(direction);
-            const next2 = next1?.next;
-            if (next1 && !next1.cell.token) {
-                moves.push(next1.cell);
+            if (!this.isValidDirection(token, direction))
+                continue;
+            const nextCell = cell.getLink(direction);
+            const jumpCell = nextCell?.getLink(direction);
+            if (nextCell && !nextCell.token) {
+                moves.push(nextCell);
             }
-            else if (next1 && next1.cell.token.colour !== start.token.colour && next2 && !next2.cell.token) {
-                moves.push(next2.cell);
+            else if (nextCell && nextCell.token.colour !== token.colour && jumpCell && !jumpCell.token) {
+                moves.push(jumpCell);
             }
         }
         return moves;
     }
     /**
-     * Checks if a direction is valid for a token.
+     * Checks if a token can move in a given direction by the game rules.
+     * @param token The token to check for.
      * @param direction The direction to move in.
-     * @param token The token to move.
-     * @returns A boolean indicating if the direction is valid for the token.
+     * @returns A boolean indicating if the token can move in the given direction.
      */
-    isValidDirection(direction, token) {
-        if (token.isKing)
-            return true;
-        if (token.colour === Colour.BLACK && (direction === Direction.TOP_LEFT || direction === Direction.TOP_RIGHT)) {
-            return true;
-        }
-        if (token.colour === Colour.WHITE && (direction === Direction.BOTTOM_LEFT || direction === Direction.BOTTOM_RIGHT)) {
-            return true;
-        }
-        return false;
+    isValidDirection(token, direction) {
+        return token.isKing || token.colour === Colour.BLACK && upDirections.includes(direction) || token.colour === Colour.WHITE && downDirections.includes(direction);
     }
 }
