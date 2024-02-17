@@ -46,7 +46,7 @@ export class MoveValidator {
      */
     public getValidMoves(token: Token): Cell[] {
         const cell: Cell = this.board.get(...token.position);
-        const moves: Cell[] = [];
+        let moves: Cell[] = [];
 
         // Check for moves in all directions
         for (const direction of directions) {
@@ -62,7 +62,22 @@ export class MoveValidator {
             }
         }
 
+        // Filter only jump moves if there are any
+        if (moves.some((end: Cell): boolean => this.isJumpMove(cell, end))) {
+            moves = moves.filter((end: Cell): boolean => this.isJumpMove(cell, end));
+        }
+
         return moves;
+    }
+
+    /**
+     * Checks if a move is a jump over another token.
+     * @param start The start cell.
+     * @param end The destination cell.
+     * @returns A boolean indicating if the move is a jump move.
+     */
+    public isJumpMove(start: Cell, end: Cell): boolean {
+        return !start.isLinkedTo(end);
     }
 
     /**

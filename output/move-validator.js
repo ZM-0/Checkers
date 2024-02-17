@@ -39,7 +39,7 @@ export class MoveValidator {
      */
     getValidMoves(token) {
         const cell = this.board.get(...token.position);
-        const moves = [];
+        let moves = [];
         // Check for moves in all directions
         for (const direction of directions) {
             if (!this.isValidDirection(token, direction))
@@ -53,7 +53,20 @@ export class MoveValidator {
                 moves.push(jumpCell);
             }
         }
+        // Filter only jump moves if there are any
+        if (moves.some((end) => this.isJumpMove(cell, end))) {
+            moves = moves.filter((end) => this.isJumpMove(cell, end));
+        }
         return moves;
+    }
+    /**
+     * Checks if a move is a jump over another token.
+     * @param start The start cell.
+     * @param end The destination cell.
+     * @returns A boolean indicating if the move is a jump move.
+     */
+    isJumpMove(start, end) {
+        return !start.isLinkedTo(end);
     }
     /**
      * Checks if a token can move in a given direction by the game rules.

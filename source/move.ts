@@ -47,7 +47,7 @@ export class Move {
     public execute(end: Cell) {
         if (!this.validator.isValidMove(this.token, end)) throw new Error("Cannot execute invalid move");
 
-        const isKill: boolean = this.isJumpMove(this.start, end);
+        const isKill: boolean = this.validator.isJumpMove(this.start, end);
 
         // Move the token
         this.start.token = null;
@@ -75,21 +75,9 @@ export class Move {
         }
 
         // Check for another chainable jump move
-        if (!this.validator.getValidMoves(this.token).some((move: Cell): boolean => this.isJumpMove(end, move))) {
+        if (!this.validator.getValidMoves(this.token).some((move: Cell): boolean => this.validator.isJumpMove(end, move))) {
             this.game.switchTurn();
         }
-    }
-
-    /**
-     * Checks if a move is a jump over another token.
-     * @param start The start cell.
-     * @param end The destination cell.
-     * @returns A boolean indicating if the move is a jump move.
-     * @throws Error if the move is invalid.
-     */
-    private isJumpMove(start: Cell, end: Cell): boolean {
-        if (!start.token || !this.validator.isValidMove(start.token, end)) throw new Error("Invalid move");
-        return !start.isLinkedTo(end);
     }
 
     /**
