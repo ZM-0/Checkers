@@ -22,10 +22,14 @@ export class Game {
      */
     _turn = Colour.BLACK;
     /**
+     * The next move.
+     */
+    nextMove = null;
+    /**
      * Creates a new game.
      */
     constructor() {
-        this.board = new Board();
+        this.board = new Board(this);
         this.blackPlayer = new Player(Colour.BLACK, this.board);
         this.whitePlayer = new Player(Colour.WHITE, this.board);
     }

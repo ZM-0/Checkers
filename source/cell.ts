@@ -1,3 +1,7 @@
+import { Board } from "./board.js";
+import { Game } from "./game.js";
+import { MoveValidator } from "./move-validator.js";
+import { Move } from "./move.js";
 import { Token } from "./token.js";
 
 /**
@@ -45,12 +49,56 @@ export class Cell {
     public token: Token | null = null;
 
     /**
+     * The cell's DOM element.
+     */
+    public readonly element: HTMLDivElement;
+
+    /**
+     * Indicates if the cell is focused.
+     */
+    public focused: boolean = false;
+
+    /**
      * Creates a new cell.
      * @param row The cell's row index.
      * @param column The cell's column index.
+     * @param game The current game.
      */
-    public constructor(row: number, column: number) {
+    public constructor(row: number, column: number, game: Game) {
         this.position = [row, column];
+        this.element = document.querySelector(`#cell-${row * Board.SIZE + column}`)!;
+
+        // Highlight valid moves on click
+        this.element.addEventListener("click", () => {
+            if (!this.token || this.token!.colour !== game.turn) return;
+
+            game.board.unhighlightAll();
+
+            if (!this.focused) {
+                console.log(1);
+                game.board.unfocusAll();
+                game.nextMove = new Move(this.token, game);
+                const moves: Cell[] = (new MoveValidator(game.board)).getValidMoves(this.token);
+                for (const move of moves) move.highlight(true);
+            } else {
+                console.log(2);
+                game.nextMove = null;
+            }
+
+            this.focused = !this.focused;
+        });
+
+        // Click on cell to execute move
+        this.element.addEventListener("click", () => {
+            const validator: MoveValidator = new MoveValidator(game.board);
+            if (!game.nextMove || !validator.isValidMove(game.nextMove.token, this)) return;
+
+            game.nextMove.execute(this);
+            game.nextMove = null;
+            game.board.unfocusAll();
+            game.board.unhighlightAll();
+            console.log(game);
+        });
     }
 
     /**
@@ -80,5 +128,14 @@ export class Cell {
      */
     public isLinkedTo(cell: Cell): boolean {
         return this.links.includes(cell);
+    }
+
+    /**
+     * Sets the cell as highlighted or unhighlighted.
+     * @param highlight Indicates whether to highlight or unhighlight the cell.
+     */
+    public highlight(highlight: boolean) {
+        if (highlight) this.element.classList.add("highlight");
+        else this.element.classList.remove("highlight");
     }
 }

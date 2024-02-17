@@ -1,5 +1,5 @@
 import { Cell, Direction } from "./cell.js";
-import { Token } from "./token.js";
+import { Game } from "./game.js";
 
 /**
  * A board of cells. Responsible for creating, linking, and retrieving the cells.
@@ -17,21 +17,23 @@ export class Board {
 
     /**
      * Creates a new board.
+     * @param game The current game.
      */
-    public constructor() {
-        this.createCells();
+    public constructor(game: Game) {
+        this.createCells(game);
         this.linkCells();
     }
 
     /**
      * Creates the cells.
+     * @param game The current game.
      */
-    private createCells() {
+    private createCells(game: Game) {
         for (let row: number = 0; row < Board.SIZE; row++) {
             this.cells.push([]);
 
             for (let column: number = 0; column < Board.SIZE; column++) {
-                this.cells[row].push(new Cell(row, column));
+                this.cells[row].push(new Cell(row, column, game));
             }
         }
     }
@@ -71,5 +73,27 @@ export class Board {
      */
     private inBounds(row: number, column: number): boolean {
         return row >= 0 && row < Board.SIZE && column >= 0 && column < Board.SIZE;
+    }
+
+    /**
+     * Unfocuses all cells.
+     */
+    public unfocusAll() {
+        for (const row of this.cells) {
+            for (const cell of row) {
+                cell.focused = false;
+            }
+        }
+    }
+
+    /**
+     * Unhighlights all cells.
+     */
+    public unhighlightAll() {
+        for (const row of this.cells) {
+            for (const cell of row) {
+                cell.highlight(false);
+            }
+        }
     }
 }

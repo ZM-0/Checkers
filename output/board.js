@@ -13,19 +13,21 @@ export class Board {
     cells = [];
     /**
      * Creates a new board.
+     * @param game The current game.
      */
-    constructor() {
-        this.createCells();
+    constructor(game) {
+        this.createCells(game);
         this.linkCells();
     }
     /**
      * Creates the cells.
+     * @param game The current game.
      */
-    createCells() {
+    createCells(game) {
         for (let row = 0; row < Board.SIZE; row++) {
             this.cells.push([]);
             for (let column = 0; column < Board.SIZE; column++) {
-                this.cells[row].push(new Cell(row, column));
+                this.cells[row].push(new Cell(row, column, game));
             }
         }
     }
@@ -66,5 +68,25 @@ export class Board {
      */
     inBounds(row, column) {
         return row >= 0 && row < Board.SIZE && column >= 0 && column < Board.SIZE;
+    }
+    /**
+     * Unfocuses all cells.
+     */
+    unfocusAll() {
+        for (const row of this.cells) {
+            for (const cell of row) {
+                cell.focused = false;
+            }
+        }
+    }
+    /**
+     * Unhighlights all cells.
+     */
+    unhighlightAll() {
+        for (const row of this.cells) {
+            for (const cell of row) {
+                cell.highlight(false);
+            }
+        }
     }
 }

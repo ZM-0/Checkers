@@ -29,6 +29,11 @@ export class Token {
      * The token's current coordinate.
      */
     public position: [number, number];
+
+    /**
+     * The token's DOM element.
+     */
+    public readonly element: HTMLElement;
     
     /**
      * Creates a new token.
@@ -40,6 +45,7 @@ export class Token {
         this.colour = colour;
         this.defaultPosition = [row, column];
         this.position = [row, column];
+        this.element = document.querySelector(`#cell-${row * Board.SIZE + column} > i`)!;
     }
 
     /**

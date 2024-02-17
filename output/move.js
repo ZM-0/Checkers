@@ -9,6 +9,10 @@ export class Move {
      */
     token;
     /**
+     * The start cell.
+     */
+    start;
+    /**
      * The game being played.
      */
     game;
@@ -23,6 +27,7 @@ export class Move {
      */
     constructor(token, game) {
         this.token = token;
+        this.start = game.board.get(...token.position);
         this.game = game;
         this.validator = new MoveValidator(game.board);
     }
@@ -34,17 +39,19 @@ export class Move {
     execute(end) {
         if (!this.validator.isValidMove(this.token, end))
             throw new Error("Cannot execute invalid move");
-        const isKill = this.isJumpMove(end);
+        const isKill = this.isJumpMove(this.start, end);
         // Move the token
-        const oldCell = this.game.board.get(...this.token.position);
-        oldCell.token = null;
+        this.start.token = null;
+        this.start.element.replaceChildren();
         end.token = this.token;
+        end.element.append(this.token.element);
         this.token.position = [...end.position];
         // Check for token kill
         if (isKill) {
-            const middle = this.getMiddle(end);
+            const middle = this.getMiddle(this.start, end);
             middle.token.isAlive = false;
             middle.token = null;
+            middle.element.replaceChildren();
         }
         // Check for promotion
         if (this.token.atOtherEnd()) {
@@ -55,36 +62,33 @@ export class Move {
             console.log(`Game over. Winner: ${this.game.getWinner()}`);
         }
         // Check for another chainable jump move
-        if (!this.validator.getValidMoves(this.token).some((move) => this.isJumpMove(move))) {
+        if (!this.validator.getValidMoves(this.token).some((move) => this.isJumpMove(end, move))) {
             this.game.switchTurn();
         }
     }
     /**
      * Checks if a move is a jump over another token.
+     * @param start The start cell.
      * @param end The destination cell.
      * @returns A boolean indicating if the move is a jump move.
      * @throws Error if the move is invalid.
      */
-    isJumpMove(end) {
-        if (!this.validator.isValidMove(this.token, end))
+    isJumpMove(start, end) {
+        if (!start.token || !this.validator.isValidMove(start.token, end))
             throw new Error("Invalid move");
-        const cell = this.game.board.get(...this.token.position);
-        return !cell.isLinkedTo(end);
+        return !start.isLinkedTo(end);
     }
     /**
      * Gets the middle cell that was jumped over.
-     * @returns The cell jumped over.
+     * @param start The start cell.
      * @param end The cell jumped to.
-     * @throws Error if the move isn't a jump move.
+     * @returns The cell jumped over.
      */
-    getMiddle(end) {
-        if (!this.isJumpMove(end))
-            throw new Error("Can't get middle cell if not jump move");
-        const cell = this.game.board.get(...this.token.position);
+    getMiddle(start, end) {
         let middle;
         for (const direction of directions) {
-            if (cell.getLink(direction)?.getLink(direction) === end) {
-                middle = cell.getLink(direction);
+            if (start.getLink(direction)?.getLink(direction) === end) {
+                middle = start.getLink(direction);
                 break;
             }
         }

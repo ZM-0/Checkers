@@ -1,5 +1,6 @@
 import { Board } from "./board.js";
 import { Colour } from "./colour.js";
+import { Move } from "./move.js";
 import { Player } from "./player.js";
 
 /**
@@ -27,10 +28,15 @@ export class Game {
     private _turn: Colour = Colour.BLACK;
 
     /**
+     * The next move.
+     */
+    public nextMove: Move | null = null;
+
+    /**
      * Creates a new game.
      */
     public constructor() {
-        this.board = new Board();
+        this.board = new Board(this);
         this.blackPlayer = new Player(Colour.BLACK, this.board);
         this.whitePlayer = new Player(Colour.WHITE, this.board);
     }

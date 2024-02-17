@@ -25,6 +25,10 @@ export class Token {
      */
     position;
     /**
+     * The token's DOM element.
+     */
+    element;
+    /**
      * Creates a new token.
      * @param colour The token's colour.
      * @param row The token's initial row.
@@ -34,6 +38,7 @@ export class Token {
         this.colour = colour;
         this.defaultPosition = [row, column];
         this.position = [row, column];
+        this.element = document.querySelector(`#cell-${row * Board.SIZE + column} > i`);
     }
     /**
      * Checks if the token is at the opposite edge of the board.
