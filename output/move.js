@@ -1,3 +1,4 @@
+import { Colour } from "./main.js";
 import { MoveValidator } from "./move-validator.js";
 /**
  * Responsible for executing a token move.
@@ -12,11 +13,17 @@ export class Move {
      */
     _end;
     /**
+     * The game object.
+     */
+    game;
+    /**
      * Creates a new move with a start cell.
      * @param start The token's cell at the move start.
+     * @param game The game object.
      */
-    constructor(start) {
+    constructor(start, game) {
         this.start = start;
+        this.game = game;
     }
     /**
      * Sets the end cell of the move.
@@ -33,11 +40,37 @@ export class Move {
         if (!validator.isValidMove(this.start, this.end))
             throw new Error("Cannot execute invalid move");
         // Move the token
-        this.start.token.cell = this.end;
+        const token = this.start.token;
+        token.cell = this.end;
         // Check for kill
         const isKill = !this.start.isAdjacent(this.end);
         if (isKill)
             this.getMiddle().token.kill();
+        // Check for promotion
+        if (this.isAtEdge(token))
+            token.isKing = true;
+        // Check for another jump move to chain
+        const nextMoves = validator.getValidMoves(token.cell);
+        let isJumpMove = false;
+        for (const move of nextMoves) {
+            if (!this.start.isAdjacent(move)) {
+                isJumpMove = true;
+                break;
+            }
+        }
+        if (!isJumpMove)
+            this.game.switchTurn();
+        // Check if the game is over
+        if (this.game.isOver())
+            console.log("Game Over!");
+    }
+    /**
+     * Checks if a token has reached the opposite edge of the board.
+     * @param token The token to check for.
+     * @returns A boolean indicating if the token is at the opposing edge of the board.
+     */
+    isAtEdge(token) {
+        return token.colour === Colour.BLACK && !token.cell.topLeft && !token.cell.topRight || token.colour === Colour.WHITE && !token.cell.bottomLeft && !token.cell.bottomRight;
     }
     /**
      * Gets the cell jumped over, if any.
