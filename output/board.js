@@ -4,7 +4,7 @@ import { Cell } from "./cell.js";
  */
 export class Board {
     /**
-     * The board dimensions.
+     * The board dimensions in cells.
      */
     static SIZE = 8;
     /**
@@ -12,18 +12,11 @@ export class Board {
      */
     cells = [];
     /**
-     * Sets up the cells in the board.
+     * Creates and sets up the cells in the board.
      */
     constructor() {
         this.createCells();
         this.assignAdjacentCells();
-    }
-    /**
-     * Gets the board dimensions.
-     * @returns The board dimensions in cells.
-     */
-    static getSize() {
-        return this.SIZE;
     }
     /**
      * Creates the cells in the board.

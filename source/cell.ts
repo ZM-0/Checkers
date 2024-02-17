@@ -41,7 +41,7 @@ export class Cell {
      * @throws Error if it is already assigned.
      */
     public set topLeft(cell: Cell) {
-        if (this._topLeft !== null) throw new Error("Top-left cell already assigned");
+        if (this._topLeft) throw new Error("Top-left cell already assigned");
         this._topLeft = cell;
     }
 
@@ -57,7 +57,7 @@ export class Cell {
      * @throws Error if it is already assigned.
      */
     public set topRight(cell: Cell) {
-        if (this._topRight !== null) throw new Error("Top-right cell already assigned");
+        if (this._topRight) throw new Error("Top-right cell already assigned");
         this._topRight = cell;
     }
 
@@ -73,7 +73,7 @@ export class Cell {
      * @throws Error if it is already assigned.
      */
     public set bottomLeft(cell: Cell) {
-        if (this._bottomLeft !== null) throw new Error("Bottom-left cell already assigned");
+        if (this._bottomLeft) throw new Error("Bottom-left cell already assigned");
         this._bottomLeft = cell;
     }
 
@@ -89,7 +89,7 @@ export class Cell {
      * @throws Error if it is already assigned.
      */
     public set bottomRight(cell: Cell) {
-        if (this._bottomRight !== null) throw new Error("Bottom-right cell already assigned");
+        if (this._bottomRight) throw new Error("Bottom-right cell already assigned");
         this._bottomRight = cell;
     }
 
@@ -105,7 +105,7 @@ export class Cell {
      * @throws Error if there is already a token on the cell.
      */
     public set token(token: Token | null) {
-        if (this._token !== null) throw new Error("Can't have two tokens on one cell");
+        if (this._token) throw new Error("Can't have two tokens on one cell");
         this._token = token;
     }
 

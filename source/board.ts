@@ -5,29 +5,21 @@ import { Cell } from "./cell.js";
  */
 export class Board {
     /**
-     * The board dimensions.
+     * The board dimensions in cells.
      */
-    private static SIZE: number = 8;
+    public static readonly SIZE: number = 8;
 
     /**
      * The cells in the board.
      */
-    private cells: Cell[][] = [];
+    private readonly cells: Cell[][] = [];
 
     /**
-     * Sets up the cells in the board.
+     * Creates and sets up the cells in the board.
      */
     constructor() {
         this.createCells();
         this.assignAdjacentCells();
-    }
-
-    /**
-     * Gets the board dimensions.
-     * @returns The board dimensions in cells.
-     */
-    public static getSize(): number {
-        return this.SIZE;
     }
 
     /**

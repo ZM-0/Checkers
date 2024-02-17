@@ -1,18 +1,19 @@
 import { Board } from "./board.js";
+import { Colour } from "./main.js";
 import { MoveValidator } from "./move-validator.js";
 import { Token } from "./token.js";
 /**
- * A player.
+ * A player. The player knows about its tokens and whether it's lost.
  */
 export class Player {
     /**
      * The initial number of tokens a player has.
      */
-    TOKEN_COUNT = 12;
+    static TOKEN_COUNT = 12;
     /**
      * The player's colour.
      */
-    COLOUR;
+    colour;
     /**
      * The player's tokens.
      */
@@ -23,7 +24,7 @@ export class Player {
      * @param board The gameboard.
      */
     constructor(colour, board) {
-        this.COLOUR = colour;
+        this.colour = colour;
         this.createTokens(board);
     }
     /**
@@ -31,12 +32,26 @@ export class Player {
      * @param board The gameboard.
      */
     createTokens(board) {
-        for (let i = 0; i < this.TOKEN_COUNT; i++) {
-            const cellIndex = (i > 3 && i < 8) ? (41 + i * 2) : (40 + i * 2);
-            const cellRow = Math.floor(cellIndex / Board.getSize());
-            const cellColumn = cellIndex % Board.getSize();
+        // The cell index where the tokens start for this player
+        const firstIndex = this.colour === Colour.WHITE ? 1 : 40;
+        // The index offset for the middle row of tokens
+        const middleOffset = this.colour === Colour.WHITE ? -1 : 1;
+        /**
+         * Checks if a token number is in the player's middle row of tokens.
+         * @param index The token number.
+         * @returns A boolean indicating if the token is in the player's middle row.
+         */
+        const inMiddle = function (index) {
+            return index >= Board.SIZE / 2 && index < Player.TOKEN_COUNT - Board.SIZE / 2;
+        };
+        // Create the tokens and assign their cells
+        for (let i = 0; i < Player.TOKEN_COUNT; i += 2) {
+            // Locate the token's cell
+            const cellIndex = inMiddle(i) ? (firstIndex + middleOffset + i * 2) : (firstIndex + i * 2);
+            const cellRow = Math.floor(cellIndex / Board.SIZE);
+            const cellColumn = cellIndex % Board.SIZE;
             const cell = board.getCell(cellRow, cellColumn);
-            this.tokens.push(new Token(this.COLOUR, cell));
+            this.tokens.push(new Token(this.colour, cell));
         }
     }
     /**
@@ -55,9 +70,9 @@ export class Player {
      * @returns A boolean indicating if all the alive tokens can't move.
      */
     isBlocked() {
-        const moveValidotor = new MoveValidator();
+        const moveValidator = new MoveValidator();
         for (const token of this.tokens) {
-            if (token.isAlive && !moveValidotor.isBlocked(token))
+            if (token.isAlive && !moveValidator.isBlocked(token))
                 return false;
         }
         return true;

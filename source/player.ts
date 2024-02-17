@@ -5,23 +5,23 @@ import { MoveValidator } from "./move-validator.js";
 import { Token } from "./token.js";
 
 /**
- * A player.
+ * A player. The player knows about its tokens and whether it's lost.
  */
 export class Player {
     /**
      * The initial number of tokens a player has.
      */
-    private TOKEN_COUNT: number = 12;
+    private static readonly TOKEN_COUNT: number = 12;
 
     /**
      * The player's colour.
      */
-    private COLOUR: Colour;
+    private readonly colour: Colour;
 
     /**
      * The player's tokens.
      */
-    private tokens: Token[] = [];
+    private readonly tokens: Token[] = [];
 
     /**
      * Creates a new player.
@@ -29,7 +29,7 @@ export class Player {
      * @param board The gameboard.
      */
     constructor(colour: Colour, board: Board) {
-        this.COLOUR = colour;
+        this.colour = colour;
         this.createTokens(board);
     }
 
@@ -38,13 +38,30 @@ export class Player {
      * @param board The gameboard.
      */
     private createTokens(board: Board) {
-        for (let i: number = 0; i < this.TOKEN_COUNT; i++) {
-            const cellIndex: number = (i > 3 && i < 8) ? (41 + i * 2) : (40 + i * 2);
-            const cellRow: number = Math.floor(cellIndex / Board.getSize());
-            const cellColumn: number = cellIndex % Board.getSize();
+        // The cell index where the tokens start for this player
+        const firstIndex: number = this.colour === Colour.WHITE ? 1 : 40;
+
+        // The index offset for the middle row of tokens
+        const middleOffset: number = this.colour === Colour.WHITE ? -1 : 1;
+
+        /**
+         * Checks if a token number is in the player's middle row of tokens.
+         * @param index The token number.
+         * @returns A boolean indicating if the token is in the player's middle row.
+         */
+        const inMiddle = function(index: number): boolean {
+            return index >= Board.SIZE / 2 && index < Player.TOKEN_COUNT - Board.SIZE / 2;
+        }
+
+        // Create the tokens and assign their cells
+        for (let i: number = 0; i < Player.TOKEN_COUNT; i += 2) {
+            // Locate the token's cell
+            const cellIndex: number = inMiddle(i) ? (firstIndex + middleOffset + i * 2) : (firstIndex + i * 2);
+            const cellRow: number = Math.floor(cellIndex / Board.SIZE);
+            const cellColumn: number = cellIndex % Board.SIZE;
             const cell: Cell = board.getCell(cellRow, cellColumn);
 
-            this.tokens.push(new Token(this.COLOUR, cell));
+            this.tokens.push(new Token(this.colour, cell));
         }
     }
 
@@ -63,10 +80,10 @@ export class Player {
      * @returns A boolean indicating if all the alive tokens can't move.
      */
     private isBlocked(): boolean {
-        const moveValidotor: MoveValidator = new MoveValidator();
+        const moveValidator: MoveValidator = new MoveValidator();
 
         for (const token of this.tokens) {
-            if (token.isAlive && !moveValidotor.isBlocked(token)) return false;
+            if (token.isAlive && !moveValidator.isBlocked(token)) return false;
         }
 
         return true;
