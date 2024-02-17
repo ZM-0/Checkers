@@ -28,7 +28,7 @@ export class Player {
      * @param colour The player's colour.
      * @param board The gameboard.
      */
-    constructor(colour: Colour, board: Board) {
+    public constructor(colour: Colour, board: Board) {
         this.colour = colour;
         this.createTokens(board);
     }

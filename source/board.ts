@@ -17,7 +17,7 @@ export class Board {
     /**
      * Creates and sets up the cells in the board.
      */
-    constructor() {
+    public constructor() {
         this.createCells();
         this.assignAdjacentCells();
     }

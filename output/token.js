@@ -43,6 +43,8 @@ export class Token {
      */
     kill() {
         this._isAlive = false;
+        if (this._cell)
+            this._cell.token = null;
         this._cell = null;
     }
     /**

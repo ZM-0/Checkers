@@ -10,7 +10,7 @@ export class Move {
     /**
      * The end cell of the move.
      */
-    end;
+    _end;
     /**
      * Creates a new move with a start cell.
      * @param start The token's cell at the move start.
@@ -20,10 +20,9 @@ export class Move {
     }
     /**
      * Sets the end cell of the move.
-     * @param end The token's cell at the move end.
      */
-    setEnd(end) {
-        this.end = end;
+    set end(end) {
+        this._end = end;
     }
     /**
      * Executes the move.
@@ -33,16 +32,12 @@ export class Move {
         const validator = new MoveValidator();
         if (!validator.isValidMove(this.start, this.end))
             throw new Error("Cannot execute invalid move");
-        const token = this.start.token;
-        this.start.removeToken();
-        token.cell = this.end;
-        this.end.token = token;
+        // Move the token
+        this.start.token.cell = this.end;
+        // Check for kill
         const isKill = !this.start.isAdjacent(this.end);
-        if (isKill) {
-            const middle = this.getMiddle();
-            middle.token.isAlive = false;
-            middle.removeToken();
-        }
+        if (isKill)
+            this.getMiddle().token.kill();
     }
     /**
      * Gets the cell jumped over, if any.

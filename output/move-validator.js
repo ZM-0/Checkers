@@ -29,10 +29,10 @@ export class MoveValidator {
      * @throws Error if the start cell doesn't have a token.
      */
     getValidMoves(start) {
-        if (!start.hasToken())
+        if (!start.token)
             throw new Error("Need token on cell to find moves");
         const moves = [];
-        const colour = start.token.getColour();
+        const colour = start.token.colour;
         // Check upward cells for moves
         if (colour === Colour.BLACK || start.token.isKing)
             moves.push(...this.getValidUpMoves(start));
@@ -78,9 +78,9 @@ export class MoveValidator {
      * @returns The valid cell to move to, or null if there is no valid move in the chosen direction.
      */
     getValidMove(start, next1, next2) {
-        if (next1 && !next1.hasToken())
+        if (next1 && !next1.token)
             return next1;
-        if (next1 && next1.token.getColour() !== start.token.getColour() && next2 && !next2.hasToken())
+        if (next1 && next1.token.colour !== start.token.colour && next2 && !next2.token)
             return next2;
         return null;
     }
