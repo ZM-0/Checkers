@@ -24,7 +24,7 @@ export class Game {
     /**
      * The next move to execute.
      */
-    nextMove;
+    nextMove = null;
     /**
      * Creates a new game with two players and a board, and sets black to start.
      */

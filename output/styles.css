@@ -44,9 +44,8 @@ body {
     cursor: pointer;
 }
 
-#board>div.focus {
-    outline: solid 4px #023E8A;
-    z-index: 1;
+#board>div.highlight {
+    border: solid 4px #023E8A;
 }
 
 /* Tokens */

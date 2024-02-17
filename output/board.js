@@ -1,6 +1,6 @@
-import { Cell } from "./cell.js";
+import { Cell, Direction, Link } from "./cell.js";
 /**
- * An 8x8 grid gameboard of cells.
+ * A board of cells.
  */
 export class Board {
     /**
@@ -13,11 +13,12 @@ export class Board {
     cells = [];
     /**
      * Creates and sets up the cells in the board.
-     * @param game The current gam.e
+     * @param game The current game.
      */
     constructor(game) {
         this.createCells(game);
-        this.assignAdjacentCells();
+        this.createLinks();
+        this.chainLinks();
     }
     /**
      * Creates the cells in the board.
@@ -32,20 +33,47 @@ export class Board {
         }
     }
     /**
-     * Assigns the diagonally adjacent cells to each cell.
+     * Sets the links between adjacent cells.
      */
-    assignAdjacentCells() {
+    createLinks() {
         for (let row = 0; row < Board.SIZE; row++) {
             for (let column = 0; column < Board.SIZE; column++) {
                 const cell = this.cells[row][column];
-                if (row > 0 && column > 0)
-                    cell.topLeft = this.cells[row - 1][column - 1];
-                if (row > 0 && column < Board.SIZE - 1)
-                    cell.topRight = this.cells[row - 1][column + 1];
-                if (row < Board.SIZE - 1 && column > 0)
-                    cell.bottomLeft = this.cells[row + 1][column - 1];
-                if (row < Board.SIZE - 1 && column < Board.SIZE - 1)
-                    cell.bottomRight = this.cells[row + 1][column + 1];
+                if (row > 0 && column > 0) {
+                    cell.set(Direction.TOP_LEFT, new Link(this.cells[row - 1][column - 1]));
+                }
+                if (row > 0 && column < Board.SIZE - 1) {
+                    cell.set(Direction.TOP_RIGHT, new Link(this.cells[row - 1][column + 1]));
+                }
+                if (row < Board.SIZE - 1 && column > 0) {
+                    cell.set(Direction.BOTTOM_LEFT, new Link(this.cells[row + 1][column - 1]));
+                }
+                if (row < Board.SIZE - 1 && column < Board.SIZE - 1) {
+                    cell.set(Direction.BOTTOM_RIGHT, new Link(this.cells[row + 1][column + 1]));
+                }
+            }
+        }
+    }
+    /**
+     * Links the links together to form chains.
+     */
+    chainLinks() {
+        for (let row = 0; row < Board.SIZE; row++) {
+            for (let column = 0; column < Board.SIZE; column++) {
+                const cell = this.cells[row][column];
+                let next;
+                let secondNext;
+                // Chain links in each direction
+                Object
+                    .keys(Direction)
+                    .filter((key) => !isNaN(Number(key)))
+                    .map((key) => Number(key))
+                    .forEach((key) => {
+                    next = cell.get(key);
+                    secondNext = next?.cell.get(key);
+                    if (secondNext)
+                        next.next = secondNext;
+                });
             }
         }
     }
@@ -68,7 +96,17 @@ export class Board {
     unfocusAll() {
         for (const row of this.cells) {
             for (const cell of row) {
-                cell.focus(false);
+                cell.focused = false;
+            }
+        }
+    }
+    /**
+     * Removes the highlights from all cells.
+     */
+    unhighlightAll() {
+        for (const row of this.cells) {
+            for (const cell of row) {
+                cell.highlight(false);
             }
         }
     }

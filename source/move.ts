@@ -11,7 +11,7 @@ export class Move {
     /**
      * The start cell of the move.
      */
-    private start: Cell;
+    public readonly start: Cell;
 
     /**
      * The end cell of the move.
@@ -46,14 +46,14 @@ export class Move {
      */
     public execute() {
         const validator: MoveValidator = new MoveValidator();
-        if (!validator.isValidMove(this.start, this.end)) throw new Error("Cannot execute invalid move");
+        if (!validator.isValidMove(this.start, this._end)) throw new Error("Cannot execute invalid move");
 
         // Move the token
         const token: Token = this.start.token!;
-        token.cell = this.end;
+        token.cell = this._end;
 
         // Check for kill
-        const isKill: boolean = !this.start.isAdjacent(this.end);
+        const isKill: boolean = !this.start.isAdjacent(this._end);
         if (isKill) this.getMiddle()!.token!.kill();
 
         // Check for promotion

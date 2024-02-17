@@ -5,28 +5,65 @@ import { Move } from "./move.js";
 import { Token } from "./token.js";
 
 /**
- * A cell or position in the 8x8 gameboard.
+ * A diagonal direction to relate cells.
+ */
+export enum Direction {
+    TOP_LEFT = 0,
+    TOP_RIGHT = 1,
+    BOTTOM_RIGHT = 2,
+    BOTTOM_LEFT = 3
+}
+
+/**
+ * A wrapper for a cell which links a diagonal chain of cells.
+ */
+export class Link {
+    /**
+     * The cell.
+     */
+    public readonly cell: Cell;
+
+    /**
+     * The next link in the chain or null if there are no more links.
+     */
+    private _next: Link | null;
+
+    /**
+     * Creates a new link.
+     * @param cell The cell contained.
+     * @param next The next link in the chain.
+     */
+    public constructor(cell: Cell, next: Link | null = null) {
+        this.cell = cell;
+        this._next = next;
+    }
+
+    /**
+     * Gets the next link.
+     */
+    public get next(): Link | null {
+        return this._next;
+    }
+
+    /**
+     * Sets the next link.
+     * @throws Error if the link is already set.
+     */
+    public set next(next: Link) {
+        if (this._next) throw new Error("Next link already set");
+        this._next = next;
+    }
+}
+
+/**
+ * A cell in a board. The cell knows about its diagonal neighbours and what token is on it.
  */
 export class Cell {
     /**
-     * The top-left cell or null if there is none.
+     * Links to the diagonally adjacent cells. The links are in clockwise order starting from the top-left.
+     * If a link doesn't exist, null is stored.
      */
-    private _topLeft: Cell | null = null;
-
-    /**
-     * The top-right cell or null if there is none.
-     */
-    private _topRight: Cell | null = null;
-
-    /**
-     * The bottom-left cell or null if there is none.
-     */
-    private _bottomLeft: Cell | null = null;
-
-    /**
-     * The bottom-right cell or null if there is none.
-     */
-    private _bottomRight: Cell | null = null;
+    private readonly links: (Link | null)[] = [null, null, null, null];
 
     /**
      * The token on this cell or null if no token is on it.
@@ -36,7 +73,15 @@ export class Cell {
     /**
      * The DOM element for the cell.
      */
-    private readonly element: HTMLDivElement;
+    public readonly element: HTMLDivElement
+
+    /**
+     * Indicates if the cell is focused.
+     */
+    public focused: boolean = false;
+
+    private row: number;
+    private column: number;
 
     /**
      * Creates a new cell and links it to the DOM.
@@ -46,81 +91,55 @@ export class Cell {
      */
     public constructor(row: number, column: number, game: Game) {
         this.element = document.querySelector(`#cell-${row * Board.SIZE + column}`)!;
+        this.row = row;
+        this.column = column;
 
-        // Event listener for starting a move
+        // Highlight or unhighlight valid moves on click
         this.element.addEventListener("click", () => {
             if (!this.token || this.token.colour !== game.turn) return;
-            game.nextMove = new Move(this, game);
 
-            // Highlight the valid destination cells
-            game.board.unfocusAll();
-            const moves: Cell[] = (new MoveValidator()).getValidMoves(this);
-            moves.forEach((cell: Cell) => cell.focus(true));
+            if (!this.focused) {
+                game.board.unfocusAll();
+                game.board.unhighlightAll();
+                game.nextMove = new Move(this, game);
+                const moves: Cell[] = (new MoveValidator()).getValidMoves(this);
+                for (const move of moves) move.highlight(true);
+            } else {
+                game.board.unhighlightAll();
+                game.nextMove = null;
+            }
+
+            this.focused = !this.focused;
+        });
+
+        // Click on a cell to complete and execute a move
+        this.element.addEventListener("click", () => {
+            if (!game.nextMove || this.token || !(new MoveValidator()).isValidMove(game.nextMove.start, this)) return;
+            console.log(this);
+            game.nextMove.end = this;
+            game.nextMove.execute();
+            console.log("Move executed");
         });
     }
 
     /**
-     * Gets the top-left cell.
+     * Gets a link in a specific direction.
+     * @param direction The direction of the link.
+     * @returns The link in the given direction, or null if there is no link.
      */
-    public get topLeft(): Cell | null {
-        return this._topLeft;
+    public get(direction: Direction): Link | null {
+        return this.links[direction];
     }
 
     /**
-     * Sets the top-left cell for this cell.
-     * @throws Error if it is already assigned.
+     * Sets a link in a specific direction.
+     * @param direction The direction of the link.
+     * @param link The link to set.
+     * @throws Error if the given link has already been set.
      */
-    public set topLeft(cell: Cell) {
-        if (this._topLeft) throw new Error("Top-left cell already assigned");
-        this._topLeft = cell;
-    }
-
-    /**
-     * Gets the top-right cell.
-     */
-    public get topRight(): Cell | null {
-        return this._topRight;
-    }
-
-    /**
-     * Sets the top-right cell for this cell.
-     * @throws Error if it is already assigned.
-     */
-    public set topRight(cell: Cell) {
-        if (this._topRight) throw new Error("Top-right cell already assigned");
-        this._topRight = cell;
-    }
-
-    /**
-     * Gets the bottom-left cell.
-     */
-    public get bottomLeft(): Cell | null {
-        return this._bottomLeft;
-    }
-
-    /**
-     * Sets the bottom-left cell for this cell.
-     * @throws Error if it is already assigned.
-     */
-    public set bottomLeft(cell: Cell) {
-        if (this._bottomLeft) throw new Error("Bottom-left cell already assigned");
-        this._bottomLeft = cell;
-    }
-
-    /**
-     * Gets the bottom-right cell.
-     */
-    public get bottomRight(): Cell | null {
-        return this._bottomRight;
-    }
-
-    /**
-     * Sets the bottom-right cell for this cell.
-     * @throws Error if it is already assigned.
-     */
-    public set bottomRight(cell: Cell) {
-        if (this._bottomRight) throw new Error("Bottom-right cell already assigned");
-        this._bottomRight = cell;
+    public set(direction: Direction, link: Link) {
+        if (this.links[direction]) throw new Error("Cannot override existing link");
+        this.links[direction] = link;
     }
 
     /**
@@ -132,7 +151,7 @@ export class Cell {
 
     /**
      * Sets the token on the cell, or sets null to remove any token from the cell.
-     * @throws Error if there is already a token on the cell.
+     * @throws Error when trying to set a token and there is already a token.
      */
     public set token(token: Token | null) {
         if (this._token) throw new Error("Can't have two tokens on one cell");
@@ -145,15 +164,15 @@ export class Cell {
      * @returns A boolean indicating if the given cell is immediately adjacent.
      */
     public isAdjacent(cell: Cell): boolean {
-        return [this.topLeft, this.topRight, this.bottomLeft, this.bottomRight].includes(cell);
+        return this.links.some((link: Link | null) => link && link.cell === cell);
     }
 
     /**
-     * Sets the sell as focused or unfocused.
-     * @param focus A boolean indicating whether to focus or unfocus the cell.
+     * Sets whether the cell is highlighted.
+     * @param highlight A boolean indicating whether to highlight or unhighlight the cell.
      */
-    public focus(focus: boolean) {
-        if (focus) this.element.classList.add("focus");
-        else this.element.classList.remove("focus");
+    public highlight(highlight: boolean) {
+        if (highlight) this.element.classList.add("highlight");
+        else this.element.classList.remove("highlight");
     }
 }

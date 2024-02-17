@@ -37,13 +37,13 @@ export class Move {
      */
     execute() {
         const validator = new MoveValidator();
-        if (!validator.isValidMove(this.start, this.end))
+        if (!validator.isValidMove(this.start, this._end))
             throw new Error("Cannot execute invalid move");
         // Move the token
         const token = this.start.token;
-        token.cell = this.end;
+        token.cell = this._end;
         // Check for kill
-        const isKill = !this.start.isAdjacent(this.end);
+        const isKill = !this.start.isAdjacent(this._end);
         if (isKill)
             this.getMiddle().token.kill();
         // Check for promotion

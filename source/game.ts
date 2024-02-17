@@ -30,7 +30,7 @@ export class Game {
     /**
      * The next move to execute.
      */
-    public nextMove!: Move;
+    public nextMove: Move | null = null;
 
     /**
      * Creates a new game with two players and a board, and sets black to start.
