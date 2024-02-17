@@ -1,8 +1,7 @@
-import { Cell } from "./cell.js";
 import { Colour } from "./colour.js";
 
 /**
- * A player's token. This class is mainly responsible for exposing information about a token.
+ * A player's token.
  */
 export class Token {
     /**
@@ -13,7 +12,7 @@ export class Token {
     /**
      * Indicates if the token is alive.
      */
-    private _isAlive: boolean = true;
+    public isAlive: boolean = true;
 
     /**
      * Indicates if the token is a king.
@@ -21,66 +20,24 @@ export class Token {
     public isKing: boolean = false;
 
     /**
-     * The token's initial cell.
+     * The token's initial coordinate.
      */
-    private readonly defaultCell: Cell;
+    private readonly defaultPosition: [number, number];
 
     /**
-     * The cell the token is on, or null if dead.
+     * The token's current coordinate.
      */
-    private _cell!: Cell | null;
-
+    public position: [number, number];
+    
     /**
-     * Creates a new token with a given colour and links it to an initial cell.
+     * Creates a new token.
      * @param colour The token's colour.
-     * @param cell The initial cell the token is on.
+     * @param row The token's initial row.
+     * @param column The token's initial column.
      */
-    public constructor(colour: Colour, cell: Cell) {
+    public constructor(colour: Colour, row: number, column: number) {
         this.colour = colour;
-        this.defaultCell = cell;
-        this.cell = cell;
-    }
-
-    /**
-     * Checks if the token is alive.
-     */
-    public get isAlive(): boolean {
-        return this._isAlive;
-    }
-
-    /**
-     * Kills the token.
-     */
-    public kill() {
-        this._isAlive = false;
-        if (this._cell) this._cell.token = null;
-        this._cell = null;
-    }
-
-    /**
-     * Gets the token's cell.
-     * @throws Error if the token is dead and not on a cell.
-     */
-    public get cell(): Cell {
-        if (!this.isAlive) throw new Error("Cannot get cell of dead token");
-        return this._cell!;
-    }
-
-    /**
-     * Moves the token to another cell and removes it from any previous cell.
-     */
-    public set cell(cell: Cell) {
-        if (this._cell) this._cell!.token = null;
-        this._cell = cell;
-        this._cell.token = this;
-    }
-
-    /**
-     * Resets the token to its initial position and state.
-     */
-    public reset() {
-        this._isAlive = true;
-        this.isKing = false;
-        this.cell = this.defaultCell;
+        this.defaultPosition = [row, column];
+        this.position = [row, column];
     }
 }

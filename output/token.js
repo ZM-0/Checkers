@@ -1,5 +1,5 @@
 /**
- * A player's token. This class is mainly responsible for exposing information about a token.
+ * A player's token.
  */
 export class Token {
     /**
@@ -9,68 +9,28 @@ export class Token {
     /**
      * Indicates if the token is alive.
      */
-    _isAlive = true;
+    isAlive = true;
     /**
      * Indicates if the token is a king.
      */
     isKing = false;
     /**
-     * The token's initial cell.
+     * The token's initial coordinate.
      */
-    defaultCell;
+    defaultPosition;
     /**
-     * The cell the token is on, or null if dead.
+     * The token's current coordinate.
      */
-    _cell;
+    position;
     /**
-     * Creates a new token with a given colour and links it to an initial cell.
+     * Creates a new token.
      * @param colour The token's colour.
-     * @param cell The initial cell the token is on.
+     * @param row The token's initial row.
+     * @param column The token's initial column.
      */
-    constructor(colour, cell) {
+    constructor(colour, row, column) {
         this.colour = colour;
-        this.defaultCell = cell;
-        this.cell = cell;
-    }
-    /**
-     * Checks if the token is alive.
-     */
-    get isAlive() {
-        return this._isAlive;
-    }
-    /**
-     * Kills the token.
-     */
-    kill() {
-        this._isAlive = false;
-        if (this._cell)
-            this._cell.token = null;
-        this._cell = null;
-    }
-    /**
-     * Gets the token's cell.
-     * @throws Error if the token is dead and not on a cell.
-     */
-    get cell() {
-        if (!this.isAlive)
-            throw new Error("Cannot get cell of dead token");
-        return this._cell;
-    }
-    /**
-     * Moves the token to another cell and removes it from any previous cell.
-     */
-    set cell(cell) {
-        if (this._cell)
-            this._cell.token = null;
-        this._cell = cell;
-        this._cell.token = this;
-    }
-    /**
-     * Resets the token to its initial position and state.
-     */
-    reset() {
-        this._isAlive = true;
-        this.isKing = false;
-        this.cell = this.defaultCell;
+        this.defaultPosition = [row, column];
+        this.position = [row, column];
     }
 }

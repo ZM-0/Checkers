@@ -41,7 +41,8 @@ export class Move {
             throw new Error("Cannot execute invalid move");
         // Move the token
         const token = this.start.token;
-        token.cell = this._end;
+        this.start.token = null;
+        this._end.token = token;
         // Check for kill
         const isKill = !this.start.isAdjacent(this._end);
         if (isKill)
@@ -50,7 +51,7 @@ export class Move {
         if (this.isAtEdge(token))
             token.isKing = true;
         // Check for another jump move to chain
-        const nextMoves = validator.getValidMoves(token.cell);
+        const nextMoves = validator.getValidMoves(this._end);
         let isJumpMove = false;
         for (const move of nextMoves) {
             if (!this.start.isAdjacent(move)) {
@@ -77,7 +78,7 @@ export class Move {
      * @returns The cell jumped over in the move, or null if no cell was jumped over.
      */
     getMiddle() {
-        if (this.start.topLeft?.topLeft === this.end)
+        if (this.start.get(Direction.TOP_LEFT)?.next?.next?.cell === this.end)
             return this.start.topLeft;
         if (this.start.topRight?.topRight === this.end)
             return this.start.topRight;

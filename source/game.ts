@@ -1,75 +1,69 @@
 import { Board } from "./board.js";
 import { Colour } from "./colour.js";
-import { Move } from "./move.js";
 import { Player } from "./player.js";
 
 /**
- * A game of checkers. Manages the overall game state.
+ * A game of checkers. Manages the game state and checks for the game end.
  */
 export class Game {
-    /**
-     * The white player.
-     */
-    private readonly whitePlayer: Player;
-
     /**
      * The black player.
      */
     private readonly blackPlayer: Player;
 
     /**
+     * The white player.
+     */
+    private readonly whitePlayer: Player;
+
+    /**
      * The gameboard.
      */
-    public readonly board: Board;
+    private readonly board: Board;
 
     /**
      * Indicates whose turn it is.
      */
-    private _turn: Colour;
+    private _turn: Colour = Colour.BLACK;
 
     /**
-     * The next move to execute.
-     */
-    public nextMove: Move | null = null;
-
-    /**
-     * Creates a new game with two players and a board, and sets black to start.
+     * Creates a new game.
      */
     public constructor() {
-        this.board = new Board(this);
-        this.whitePlayer = new Player(Colour.WHITE, this.board);
-        this.blackPlayer = new Player(Colour.BLACK, this.board);
-        this._turn = Colour.BLACK;
+        this.blackPlayer = new Player(Colour.BLACK);
+        this.whitePlayer = new Player(Colour.WHITE);
+        this.board = new Board();
     }
 
     /**
-     * Gets the current turn.
+     * Gets whose turn it is.
      */
     public get turn(): Colour {
         return this._turn;
     }
 
     /**
-     * Switches the turn.
+     * Toggles the turn between the players.
      */
     public switchTurn() {
         this._turn = this.turn === Colour.BLACK ? Colour.WHITE : Colour.BLACK;
     }
 
     /**
-     * Checks if the game is over and a player has lost.
+     * Checks if the game is over.
      * @returns A boolean indicating if the game is over.
      */
     public isOver(): boolean {
-        return this.whitePlayer.hasLost() || this.blackPlayer.hasLost();
+        return this.blackPlayer.hasLost() || this.whitePlayer.hasLost();
     }
 
     /**
-     * Resets the game.
+     * Gets the winner of the game.
+     * @returns The colour of the winner.
+     * @throws Error if the game isn't over.
      */
-    public reset() {
-        this.whitePlayer.reset();
-        this.blackPlayer.reset();
-        this._turn = Colour.BLACK;
+    public getWinner(): Colour {
+        if (!this.isOver()) throw new Error("Can't get winner as game isn't over");
+        return this.blackPlayer.hasLost() ? Colour.WHITE : Colour.BLACK;
     }
 }

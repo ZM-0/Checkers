@@ -1,6 +1,6 @@
-import { Cell, Direction, Link } from "./cell.js";
+import { Cell, Direction } from "./cell.js";
 /**
- * A board of cells.
+ * A board of cells. Responsible for creating, linking, and retrieving the cells.
  */
 export class Board {
     /**
@@ -8,72 +8,42 @@ export class Board {
      */
     static SIZE = 8;
     /**
-     * The cells in the board.
+     * The cells.
      */
     cells = [];
     /**
-     * Creates and sets up the cells in the board.
-     * @param game The current game.
+     * Creates a new board.
      */
-    constructor(game) {
-        this.createCells(game);
-        this.createLinks();
-        this.chainLinks();
+    constructor() {
+        this.createCells();
+        this.linkCells();
     }
     /**
-     * Creates the cells in the board.
-     * @param game The current game.
+     * Creates the cells.
      */
-    createCells(game) {
+    createCells() {
         for (let row = 0; row < Board.SIZE; row++) {
             this.cells.push([]);
             for (let column = 0; column < Board.SIZE; column++) {
-                this.cells[row].push(new Cell(row, column, game));
+                this.cells[row].push(new Cell());
             }
         }
     }
     /**
-     * Sets the links between adjacent cells.
+     * Links the cells to each other.
      */
-    createLinks() {
+    linkCells() {
         for (let row = 0; row < Board.SIZE; row++) {
             for (let column = 0; column < Board.SIZE; column++) {
                 const cell = this.cells[row][column];
-                if (row > 0 && column > 0) {
-                    cell.set(Direction.TOP_LEFT, new Link(this.cells[row - 1][column - 1]));
-                }
-                if (row > 0 && column < Board.SIZE - 1) {
-                    cell.set(Direction.TOP_RIGHT, new Link(this.cells[row - 1][column + 1]));
-                }
-                if (row < Board.SIZE - 1 && column > 0) {
-                    cell.set(Direction.BOTTOM_LEFT, new Link(this.cells[row + 1][column - 1]));
-                }
-                if (row < Board.SIZE - 1 && column < Board.SIZE - 1) {
-                    cell.set(Direction.BOTTOM_RIGHT, new Link(this.cells[row + 1][column + 1]));
-                }
-            }
-        }
-    }
-    /**
-     * Links the links together to form chains.
-     */
-    chainLinks() {
-        for (let row = 0; row < Board.SIZE; row++) {
-            for (let column = 0; column < Board.SIZE; column++) {
-                const cell = this.cells[row][column];
-                let next;
-                let secondNext;
-                // Chain links in each direction
-                Object
-                    .keys(Direction)
-                    .filter((key) => !isNaN(Number(key)))
-                    .map((key) => Number(key))
-                    .forEach((key) => {
-                    next = cell.get(key);
-                    secondNext = next?.cell.get(key);
-                    if (secondNext)
-                        next.next = secondNext;
-                });
+                if (this.inBounds(row - 1, column - 1))
+                    cell.setLink(Direction.TOP_LEFT, this.get(row - 1, column - 1));
+                if (this.inBounds(row - 1, column + 1))
+                    cell.setLink(Direction.TOP_RIGHT, this.get(row - 1, column + 1));
+                if (this.inBounds(row + 1, column - 1))
+                    cell.setLink(Direction.BOTTOM_LEFT, this.get(row + 1, column - 1));
+                if (this.inBounds(row + 1, column + 1))
+                    cell.setLink(Direction.BOTTOM_RIGHT, this.get(row + 1, column + 1));
             }
         }
     }
@@ -81,33 +51,20 @@ export class Board {
      * Gets a cell in the board.
      * @param row The row index.
      * @param column The column index.
-     * @returns The cell.
-     * @throws RangeError if the indexes are out of bounds.
+     * @throws RangeError if the coordinate is out of bounds.
      */
-    getCell(row, column) {
-        if (row < 0 || row >= Board.SIZE || column < 0 || column >= Board.SIZE) {
-            throw new RangeError("Invalid cell row or column");
-        }
+    get(row, column) {
+        if (!this.inBounds(row, column))
+            throw new RangeError("Cell coordinate out of bounds");
         return this.cells[row][column];
     }
     /**
-     * Removes the focus from all cells.
+     * Checks if a cell coordinate is in bounds of the board.
+     * @param row The row index.
+     * @param column The column index.
+     * @returns A boolean indicating if the given coordinate is in bounds.
      */
-    unfocusAll() {
-        for (const row of this.cells) {
-            for (const cell of row) {
-                cell.focused = false;
-            }
-        }
-    }
-    /**
-     * Removes the highlights from all cells.
-     */
-    unhighlightAll() {
-        for (const row of this.cells) {
-            for (const cell of row) {
-                cell.highlight(false);
-            }
-        }
+    inBounds(row, column) {
+        return row >= 0 && row < Board.SIZE && column >= 0 && column < Board.SIZE;
     }
 }

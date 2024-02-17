@@ -50,7 +50,8 @@ export class Move {
 
         // Move the token
         const token: Token = this.start.token!;
-        token.cell = this._end;
+        this.start.token = null;
+        this._end.token = token;
 
         // Check for kill
         const isKill: boolean = !this.start.isAdjacent(this._end);
@@ -60,7 +61,7 @@ export class Move {
         if (this.isAtEdge(token)) token.isKing = true;
 
         // Check for another jump move to chain
-        const nextMoves: Cell[] = validator.getValidMoves(token.cell);
+        const nextMoves: Cell[] = validator.getValidMoves(this._end);
         let isJumpMove: boolean = false;
 
         for (const move of nextMoves) {
@@ -90,7 +91,7 @@ export class Move {
      * @returns The cell jumped over in the move, or null if no cell was jumped over.
      */
     private getMiddle(): Cell | null {
-        if (this.start.topLeft?.topLeft === this.end) return this.start.topLeft;
+        if (this.start.get(Direction.TOP_LEFT)?.next?.next?.cell === this.end) return this.start.topLeft;
         if (this.start.topRight?.topRight === this.end) return this.start.topRight;
         if (this.start.bottomLeft?.bottomLeft === this.end) return this.start.bottomLeft;
         if (this.start.bottomRight?.bottomRight === this.end) return this.start.bottomRight;
