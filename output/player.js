@@ -1,5 +1,5 @@
 import { Board } from "./board.js";
-import { Colour } from "./main.js";
+import { Colour } from "./colour.js";
 import { MoveValidator } from "./move-validator.js";
 import { Token } from "./token.js";
 /**

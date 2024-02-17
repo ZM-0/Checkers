@@ -1,4 +1,4 @@
-import { Colour } from "./main.js";
+import { Colour } from "./colour.js";
 import { MoveValidator } from "./move-validator.js";
 /**
  * Responsible for executing a token move.

@@ -1,5 +1,5 @@
 import { Cell } from "./cell.js";
-import { Colour } from "./main.js";
+import { Colour } from "./colour.js";
 import { Token } from "./token.js";
 
 /**

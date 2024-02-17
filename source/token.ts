@@ -1,5 +1,5 @@
 import { Cell } from "./cell.js";
-import { Colour } from "./main.js";
+import { Colour } from "./colour.js";
 
 /**
  * A player's token. This class is mainly responsible for exposing information about a token.

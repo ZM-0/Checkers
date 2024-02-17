@@ -1,15 +1,5 @@
-import { Cell } from "./cell.js";
-import { MoveValidator } from "./move-validator.js";
-import { Move } from "./move.js";
-import { Token } from "./token.js";
-
-/**
- * Identifies the colour of the cells, players, and tokens.
- */
-export enum Colour {
-    BLACK,
-    WHITE
-}
+import { Colour } from "./colour.js";
+import { Game } from "./game.js";
 
 // Colour the board cells
 
@@ -24,3 +14,6 @@ for (let row: number = 0; row < 8; row++) {
 
     colour = colour === Colour.BLACK ? Colour.WHITE : Colour.BLACK;
 }
+
+// Create a new game
+const game: Game = new Game();

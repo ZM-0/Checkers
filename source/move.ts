@@ -1,6 +1,6 @@
 import { Cell } from "./cell.js";
+import { Colour } from "./colour.js";
 import { Game } from "./game.js";
-import { Colour } from "./main.js";
 import { MoveValidator } from "./move-validator.js";
 import { Token } from "./token.js";
 

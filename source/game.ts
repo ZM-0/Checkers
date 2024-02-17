@@ -1,5 +1,5 @@
 import { Board } from "./board.js";
-import { Colour } from "./main";
+import { Colour } from "./colour.js";
 import { Player } from "./player.js";
 
 /**

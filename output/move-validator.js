@@ -1,4 +1,4 @@
-import { Colour } from "./main.js";
+import { Colour } from "./colour.js";
 /**
  * Gets valid token moves and validates moves.
  */
