@@ -34,10 +34,19 @@ body {
 
 /* Board Cell */
 
-#board > div {
+#board>div {
     display: block flex;
     justify-content: center;
     align-items: center;
+}
+
+#board>div:hover {
+    cursor: pointer;
+}
+
+#board>div.focus {
+    outline: solid 4px #023E8A;
+    z-index: 1;
 }
 
 /* Tokens */

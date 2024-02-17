@@ -1,3 +1,7 @@
+import { Board } from "./board.js";
+import { Game } from "./game.js";
+import { MoveValidator } from "./move-validator.js";
+import { Move } from "./move.js";
 import { Token } from "./token.js";
 
 /**
@@ -28,6 +32,32 @@ export class Cell {
      * The token on this cell or null if no token is on it.
      */
     private _token: Token | null = null;
+
+    /**
+     * The DOM element for the cell.
+     */
+    private readonly element: HTMLDivElement;
+
+    /**
+     * Creates a new cell and links it to the DOM.
+     * @param row The cell's row index.
+     * @param column The cell's column index.
+     * @param game The current game.
+     */
+    public constructor(row: number, column: number, game: Game) {
+        this.element = document.querySelector(`#cell-${row * Board.SIZE + column}`)!;
+
+        // Event listener for starting a move
+        this.element.addEventListener("click", () => {
+            if (!this.token || this.token.colour !== game.turn) return;
+            game.nextMove = new Move(this, game);
+
+            // Highlight the valid destination cells
+            game.board.unfocusAll();
+            const moves: Cell[] = (new MoveValidator()).getValidMoves(this);
+            moves.forEach((cell: Cell) => cell.focus(true));
+        });
+    }
 
     /**
      * Gets the top-left cell.
@@ -116,5 +146,14 @@ export class Cell {
      */
     public isAdjacent(cell: Cell): boolean {
         return [this.topLeft, this.topRight, this.bottomLeft, this.bottomRight].includes(cell);
+    }
+
+    /**
+     * Sets the sell as focused or unfocused.
+     * @param focus A boolean indicating whether to focus or unfocus the cell.
+     */
+    public focus(focus: boolean) {
+        if (focus) this.element.classList.add("focus");
+        else this.element.classList.remove("focus");
     }
 }

@@ -1,4 +1,5 @@
 import { Cell } from "./cell.js";
+import { Game } from "./game.js";
 
 /**
  * An 8x8 grid gameboard of cells.
@@ -16,21 +17,23 @@ export class Board {
 
     /**
      * Creates and sets up the cells in the board.
+     * @param game The current gam.e
      */
-    public constructor() {
-        this.createCells();
+    public constructor(game: Game) {
+        this.createCells(game);
         this.assignAdjacentCells();
     }
 
     /**
      * Creates the cells in the board.
+     * @param game The current game.
      */
-    private createCells() {
+    private createCells(game: Game) {
         for (let row: number = 0; row < Board.SIZE; row++) {
             this.cells.push([]);
 
             for (let column: number = 0; column < Board.SIZE; column++) {
-                this.cells[row].push(new Cell());
+                this.cells[row].push(new Cell(row, column, game));
             }
         }
     }
@@ -64,5 +67,16 @@ export class Board {
         }
 
         return this.cells[row][column];
+    }
+
+    /**
+     * Removes the focus from all cells.
+     */
+    public unfocusAll() {
+        for (const row of this.cells) {
+            for (const cell of row) {
+                cell.focus(false);
+            }
+        }
     }
 }

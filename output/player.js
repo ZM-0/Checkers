@@ -32,26 +32,15 @@ export class Player {
      * @param board The gameboard.
      */
     createTokens(board) {
-        // The cell index where the tokens start for this player
-        const firstIndex = this.colour === Colour.WHITE ? 1 : 40;
-        // The index offset for the middle row of tokens
-        const middleOffset = this.colour === Colour.WHITE ? -1 : 1;
-        /**
-         * Checks if a token number is in the player's middle row of tokens.
-         * @param index The token number.
-         * @returns A boolean indicating if the token is in the player's middle row.
-         */
-        const inMiddle = function (index) {
-            return index >= Board.SIZE / 2 && index < Player.TOKEN_COUNT - Board.SIZE / 2;
-        };
-        // Create the tokens and assign their cells
-        for (let i = 0; i < Player.TOKEN_COUNT; i += 2) {
-            // Locate the token's cell
-            const cellIndex = inMiddle(i) ? (firstIndex + middleOffset + i * 2) : (firstIndex + i * 2);
-            const cellRow = Math.floor(cellIndex / Board.SIZE);
-            const cellColumn = cellIndex % Board.SIZE;
-            const cell = board.getCell(cellRow, cellColumn);
-            this.tokens.push(new Token(this.colour, cell));
+        const startRow = this.colour === Colour.WHITE ? 0 : 5;
+        const startColumn = this.colour === Colour.WHITE ? 1 : 0;
+        for (let diagonal = 0; diagonal < 4; diagonal++) {
+            for (let offset = 0; offset < 3; offset++) {
+                const row = startRow + offset;
+                const column = (startColumn + diagonal * 2 + offset) % Board.SIZE;
+                const cell = board.getCell(row, column);
+                this.tokens.push(new Token(this.colour, cell));
+            }
         }
     }
     /**

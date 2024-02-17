@@ -37,8 +37,10 @@ export class MoveValidator {
         if (colour === Colour.BLACK || start.token.isKing)
             moves.push(...this.getValidUpMoves(start));
         // Check downward cells for moves
-        if (colour == Colour.WHITE || start.token.isKing)
+        if (colour === Colour.WHITE || start.token.isKing) {
+            console.log("getting valid down moves");
             moves.push(...this.getValidDownMoves(start));
+        }
         return moves;
     }
     /**

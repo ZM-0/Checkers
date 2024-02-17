@@ -1,5 +1,6 @@
 import { Board } from "./board.js";
 import { Colour } from "./colour.js";
+import { Move } from "./move.js";
 import { Player } from "./player.js";
 
 /**
@@ -19,28 +20,40 @@ export class Game {
     /**
      * The gameboard.
      */
-    private readonly board: Board;
+    public readonly board: Board;
 
     /**
      * Indicates whose turn it is.
      */
-    private turn: Colour;
+    private _turn: Colour;
+
+    /**
+     * The next move to execute.
+     */
+    public nextMove!: Move;
 
     /**
      * Creates a new game with two players and a board, and sets black to start.
      */
     public constructor() {
-        this.board = new Board();
+        this.board = new Board(this);
         this.whitePlayer = new Player(Colour.WHITE, this.board);
         this.blackPlayer = new Player(Colour.BLACK, this.board);
-        this.turn = Colour.BLACK;
+        this._turn = Colour.BLACK;
+    }
+
+    /**
+     * Gets the current turn.
+     */
+    public get turn(): Colour {
+        return this._turn;
     }
 
     /**
      * Switches the turn.
      */
     public switchTurn() {
-        this.turn = this.turn === Colour.BLACK ? Colour.WHITE : Colour.BLACK;
+        this._turn = this.turn === Colour.BLACK ? Colour.WHITE : Colour.BLACK;
     }
 
     /**
@@ -57,6 +70,6 @@ export class Game {
     public reset() {
         this.whitePlayer.reset();
         this.blackPlayer.reset();
-        this.turn = Colour.BLACK;
+        this._turn = Colour.BLACK;
     }
 }

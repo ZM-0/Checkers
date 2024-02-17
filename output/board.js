@@ -13,19 +13,21 @@ export class Board {
     cells = [];
     /**
      * Creates and sets up the cells in the board.
+     * @param game The current gam.e
      */
-    constructor() {
-        this.createCells();
+    constructor(game) {
+        this.createCells(game);
         this.assignAdjacentCells();
     }
     /**
      * Creates the cells in the board.
+     * @param game The current game.
      */
-    createCells() {
+    createCells(game) {
         for (let row = 0; row < Board.SIZE; row++) {
             this.cells.push([]);
             for (let column = 0; column < Board.SIZE; column++) {
-                this.cells[row].push(new Cell());
+                this.cells[row].push(new Cell(row, column, game));
             }
         }
     }
@@ -59,5 +61,15 @@ export class Board {
             throw new RangeError("Invalid cell row or column");
         }
         return this.cells[row][column];
+    }
+    /**
+     * Removes the focus from all cells.
+     */
+    unfocusAll() {
+        for (const row of this.cells) {
+            for (const cell of row) {
+                cell.focus(false);
+            }
+        }
     }
 }

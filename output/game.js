@@ -20,21 +20,31 @@ export class Game {
     /**
      * Indicates whose turn it is.
      */
-    turn;
+    _turn;
+    /**
+     * The next move to execute.
+     */
+    nextMove;
     /**
      * Creates a new game with two players and a board, and sets black to start.
      */
     constructor() {
-        this.board = new Board();
+        this.board = new Board(this);
         this.whitePlayer = new Player(Colour.WHITE, this.board);
         this.blackPlayer = new Player(Colour.BLACK, this.board);
-        this.turn = Colour.BLACK;
+        this._turn = Colour.BLACK;
+    }
+    /**
+     * Gets the current turn.
+     */
+    get turn() {
+        return this._turn;
     }
     /**
      * Switches the turn.
      */
     switchTurn() {
-        this.turn = this.turn === Colour.BLACK ? Colour.WHITE : Colour.BLACK;
+        this._turn = this.turn === Colour.BLACK ? Colour.WHITE : Colour.BLACK;
     }
     /**
      * Checks if the game is over and a player has lost.
@@ -49,6 +59,6 @@ export class Game {
     reset() {
         this.whitePlayer.reset();
         this.blackPlayer.reset();
-        this.turn = Colour.BLACK;
+        this._turn = Colour.BLACK;
     }
 }
