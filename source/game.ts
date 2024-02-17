@@ -19,7 +19,7 @@ export class Game {
     /**
      * The gameboard.
      */
-    private readonly board: Board;
+    public readonly board: Board;
 
     /**
      * Indicates whose turn it is.
@@ -30,9 +30,9 @@ export class Game {
      * Creates a new game.
      */
     public constructor() {
-        this.blackPlayer = new Player(Colour.BLACK);
-        this.whitePlayer = new Player(Colour.WHITE);
         this.board = new Board();
+        this.blackPlayer = new Player(Colour.BLACK, this.board);
+        this.whitePlayer = new Player(Colour.WHITE, this.board);
     }
 
     /**

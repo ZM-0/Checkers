@@ -31,7 +31,7 @@ export class Board {
             this.cells.push([]);
 
             for (let column: number = 0; column < Board.SIZE; column++) {
-                this.cells[row].push(new Cell());
+                this.cells[row].push(new Cell(row, column));
             }
         }
     }

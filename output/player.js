@@ -28,21 +28,25 @@ export class Player {
     /**
      * Creates a new player.
      * @param colour The player's colour.
+     * @param board The board being playe don.
      */
-    constructor(colour) {
+    constructor(colour, board) {
         this.colour = colour;
         this.startCoordinate = colour === Colour.BLACK ? [5, 0] : [0, 1];
-        this.createTokens();
+        this.createTokens(board);
     }
     /**
      * Creates the player's tokens.
+     * @param board The board being played on.
      */
-    createTokens() {
+    createTokens(board) {
         for (let diagonal = 0; diagonal < Board.SIZE / 2; diagonal++) {
             for (let offset = 0; offset < Player.rowCount; offset++) {
                 const row = this.startCoordinate[0] + offset;
                 const column = (this.startCoordinate[1] + diagonal * (Player.rowCount - 1) + offset) % Board.SIZE;
-                this.tokens.push(new Token(this.colour, row, column));
+                const token = new Token(this.colour, row, column);
+                this.tokens.push(token);
+                board.get(row, column).token = token;
             }
         }
     }

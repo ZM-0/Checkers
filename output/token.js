@@ -1,3 +1,5 @@
+import { Board } from "./board.js";
+import { Colour } from "./colour.js";
 /**
  * A player's token.
  */
@@ -32,5 +34,12 @@ export class Token {
         this.colour = colour;
         this.defaultPosition = [row, column];
         this.position = [row, column];
+    }
+    /**
+     * Checks if the token is at the opposite edge of the board.
+     * @returns A boolean indicating if the token has reached the other end.
+     */
+    atOtherEnd() {
+        return this.colour === Colour.BLACK && this.position[0] === 0 || this.colour === Colour.WHITE && this.position[0] === Board.SIZE - 1;
     }
 }

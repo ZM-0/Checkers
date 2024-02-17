@@ -1,5 +1,6 @@
 import { Colour } from "./colour.js";
 import { Game } from "./game.js";
+import { Move } from "./move.js";
 
 // Colour the board cells
 
@@ -17,3 +18,8 @@ for (let row: number = 0; row < 8; row++) {
 
 // Create a new game
 const game: Game = new Game();
+
+console.log(game.board);
+const move: Move = new Move(game.board.get(2, 1).token!, game);
+move.execute(game.board.get(3, 2));
+console.log(game.board);

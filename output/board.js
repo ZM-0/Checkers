@@ -25,7 +25,7 @@ export class Board {
         for (let row = 0; row < Board.SIZE; row++) {
             this.cells.push([]);
             for (let column = 0; column < Board.SIZE; column++) {
-                this.cells[row].push(new Cell());
+                this.cells[row].push(new Cell(row, column));
             }
         }
     }

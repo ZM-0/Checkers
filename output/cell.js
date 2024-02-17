@@ -29,13 +29,20 @@ export class Cell {
      */
     links = [null, null, null, null];
     /**
+     * The cell's coordinate in the board.
+     */
+    position;
+    /**
      * The token on the cell, or null if no token is on it.
      */
     token = null;
     /**
      * Creates a new cell.
+     * @param row The cell's row index.
+     * @param column The cell's column index.
      */
-    constructor() {
+    constructor(row, column) {
+        this.position = [row, column];
     }
     /**
      * Gets a diagonally adjacent cell.
@@ -55,5 +62,13 @@ export class Cell {
         if (this.links[direction])
             throw new Error("Cannot override linked cell");
         this.links[direction] = cell;
+    }
+    /**
+     * Checks if a given cell is directly linked to this cell.
+     * @param cell The cell to check for.
+     * @returns A boolean indicating if the cells are adjacent.
+     */
+    isLinkedTo(cell) {
+        return this.links.includes(cell);
     }
 }

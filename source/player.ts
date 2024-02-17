@@ -34,22 +34,27 @@ export class Player {
     /**
      * Creates a new player.
      * @param colour The player's colour.
+     * @param board The board being playe don.
      */
-    public constructor(colour: Colour) {
+    public constructor(colour: Colour, board: Board) {
         this.colour = colour;
         this.startCoordinate = colour === Colour.BLACK ? [5, 0] : [0, 1];
-        this.createTokens();
+        this.createTokens(board);
     }
     
     /**
      * Creates the player's tokens.
+     * @param board The board being played on.
      */
-    private createTokens() {
+    private createTokens(board: Board) {
         for (let diagonal: number = 0; diagonal < Board.SIZE / 2; diagonal++) {
             for (let offset: number = 0; offset < Player.rowCount; offset++) {
                 const row: number = this.startCoordinate[0] + offset;
                 const column: number = (this.startCoordinate[1] + diagonal * (Player.rowCount - 1) + offset) % Board.SIZE;
-                this.tokens.push(new Token(this.colour, row, column));
+
+                const token: Token = new Token(this.colour, row, column);
+                this.tokens.push(token);
+                board.get(row, column).token = token;
             }
         }
     }
@@ -67,6 +72,6 @@ export class Player {
      * @returns The number of alive tokens.
      */
     private countAliveTokens(): number {
-        return this.tokens.filter((token: Token) => token.isAlive).length;
+        return this.tokens.filter((token: Token): boolean => token.isAlive).length;
     }
 }

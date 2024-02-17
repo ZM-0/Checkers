@@ -35,15 +35,22 @@ export class Cell {
     private readonly links: (Cell | null)[] = [null, null, null, null];
 
     /**
+     * The cell's coordinate in the board.
+     */
+    public readonly position: [number, number];
+
+    /**
      * The token on the cell, or null if no token is on it.
      */
     public token: Token | null = null;
 
     /**
      * Creates a new cell.
+     * @param row The cell's row index.
+     * @param column The cell's column index.
      */
-    public constructor() {
-        
+    public constructor(row: number, column: number) {
+        this.position = [row, column];
     }
 
     /**
@@ -64,5 +71,14 @@ export class Cell {
     public setLink(direction: Direction, cell: Cell) {
         if (this.links[direction]) throw new Error("Cannot override linked cell");
         this.links[direction] = cell;
+    }
+
+    /**
+     * Checks if a given cell is directly linked to this cell.
+     * @param cell The cell to check for.
+     * @returns A boolean indicating if the cells are adjacent.
+     */
+    public isLinkedTo(cell: Cell): boolean {
+        return this.links.includes(cell);
     }
 }
