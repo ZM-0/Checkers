@@ -77,6 +77,8 @@ export class Player {
             oldCell.token = null;
             oldCell.element.replaceChildren();
             token.reset();
+        }
+        for (const token of this.tokens) {
             const newCell = this.board.get(...token.position);
             newCell.token = token;
             newCell.element.append(token.element);

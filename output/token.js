@@ -53,6 +53,8 @@ export class Token {
     reset() {
         this.isAlive = true;
         this.isKing = false;
+        this.element.classList.remove("fa-crown");
+        this.element.classList.add("fa-hockey-puck");
         this.position = [...this.defaultPosition];
     }
 }
