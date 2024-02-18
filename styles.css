@@ -103,7 +103,7 @@ i.token.black-token {
     }
 
     #board > div.highlight {
-        border-width: 2px;
+        border-width: 3px;
     }
 
     i.token {
