@@ -56,15 +56,15 @@ export class Move {
         // Check for promotion
         if (this.token.atOtherEnd()) {
             this.token.isKing = true;
-        }
-        // Check for game over
-        if (this.game.isOver()) {
-            console.log(`Game over. Winner: ${this.game.getWinner()}`);
+            this.token.element.classList.remove("fa-hockey-puck");
+            this.token.element.classList.add("fa-crown");
         }
         // Check for another chainable jump move
-        if (!this.validator.getValidMoves(this.token).some((move) => this.validator.isJumpMove(end, move))) {
+        if (!isKill || !this.validator.getValidMoves(this.token).some((move) => this.validator.isJumpMove(end, move))) {
             this.game.switchTurn();
         }
+        // Check for game over
+        this.game.isOver();
     }
     /**
      * Gets the middle cell that was jumped over.

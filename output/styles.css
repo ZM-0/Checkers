@@ -40,7 +40,7 @@ body {
     align-items: center;
 }
 
-#board>div:hover {
+#board:not(.disabled)>div:hover {
     cursor: pointer;
 }
 

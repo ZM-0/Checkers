@@ -70,7 +70,7 @@ export class Cell {
 
         // Highlight valid moves on click
         this.element.addEventListener("click", () => {
-            if (!this.token || this.token!.colour !== game.turn) return;
+            if (game.isOver() || !this.token || this.token!.colour !== game.turn) return;
 
             game.board.unhighlightAll();
 
@@ -91,7 +91,7 @@ export class Cell {
         // Click on cell to execute move
         this.element.addEventListener("click", () => {
             const validator: MoveValidator = new MoveValidator(game.board);
-            if (!game.nextMove || !validator.isValidMove(game.nextMove.token, this)) return;
+            if (game.isOver() || !game.nextMove || !validator.isValidMove(game.nextMove.token, this)) return;
 
             game.nextMove.execute(this);
             game.nextMove = null;

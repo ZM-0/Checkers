@@ -58,7 +58,7 @@ export class Cell {
         this.element = document.querySelector(`#cell-${row * Board.SIZE + column}`);
         // Highlight valid moves on click
         this.element.addEventListener("click", () => {
-            if (!this.token || this.token.colour !== game.turn)
+            if (game.isOver() || !this.token || this.token.colour !== game.turn)
                 return;
             game.board.unhighlightAll();
             if (!this.focused) {
@@ -78,7 +78,7 @@ export class Cell {
         // Click on cell to execute move
         this.element.addEventListener("click", () => {
             const validator = new MoveValidator(game.board);
-            if (!game.nextMove || !validator.isValidMove(game.nextMove.token, this))
+            if (game.isOver() || !game.nextMove || !validator.isValidMove(game.nextMove.token, this))
                 return;
             game.nextMove.execute(this);
             game.nextMove = null;

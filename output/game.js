@@ -52,20 +52,15 @@ export class Game {
         this.turnElement.innerText = this.turn === Colour.BLACK ? "Black's turn" : "White's turn";
     }
     /**
-     * Checks if the game is over.
+     * Checks if the game is over and displays a winner if it is.
      * @returns A boolean indicating if the game is over.
      */
     isOver() {
-        return this.blackPlayer.hasLost() || this.whitePlayer.hasLost();
-    }
-    /**
-     * Gets the winner of the game.
-     * @returns The colour of the winner.
-     * @throws Error if the game isn't over.
-     */
-    getWinner() {
-        if (!this.isOver())
-            throw new Error("Can't get winner as game isn't over");
-        return this.blackPlayer.hasLost() ? Colour.WHITE : Colour.BLACK;
+        const isOver = this.blackPlayer.hasLost() || this.whitePlayer.hasLost();
+        if (isOver) {
+            this.turnElement.innerText = this.blackPlayer.hasLost() ? "White won" : "Black won";
+            document.querySelector("#board").classList.add("disabled");
+        }
+        return isOver;
     }
 }

@@ -64,6 +64,7 @@ export class Player {
      * @returns A boolean indicating if the player has lost.
      */
     public hasLost(): boolean {
+        console.log("Player has tokens:", this.countAliveTokens());
         return this.countAliveTokens() === 0;
     }
 

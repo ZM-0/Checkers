@@ -1,4 +1,5 @@
 import { Cell, directions } from "./cell.js";
+import { Colour } from "./colour.js";
 import { Game } from "./game.js";
 import { MoveValidator } from "./move-validator.js";
 import { Token } from "./token.js";
@@ -67,17 +68,17 @@ export class Move {
         // Check for promotion
         if (this.token.atOtherEnd()) {
             this.token.isKing = true;
-        }
-
-        // Check for game over
-        if (this.game.isOver()) {
-            console.log(`Game over. Winner: ${this.game.getWinner()}`);
+            this.token.element.classList.remove("fa-hockey-puck");
+            this.token.element.classList.add("fa-crown");
         }
 
         // Check for another chainable jump move
-        if (!this.validator.getValidMoves(this.token).some((move: Cell): boolean => this.validator.isJumpMove(end, move))) {
+        if (!isKill || !this.validator.getValidMoves(this.token).some((move: Cell): boolean => this.validator.isJumpMove(end, move))) {
             this.game.switchTurn();
         }
+
+        // Check for game over
+        this.game.isOver();
     }
 
     /**

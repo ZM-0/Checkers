@@ -30,7 +30,7 @@ export class Game {
     /**
      * The turn indicator element.
      */
-    private readonly turnElement: HTMLElement;
+    public readonly turnElement: HTMLElement;
 
     /**
      * The next move.
@@ -63,20 +63,17 @@ export class Game {
     }
 
     /**
-     * Checks if the game is over.
+     * Checks if the game is over and displays a winner if it is.
      * @returns A boolean indicating if the game is over.
      */
     public isOver(): boolean {
-        return this.blackPlayer.hasLost() || this.whitePlayer.hasLost();
-    }
+        const isOver: boolean = this.blackPlayer.hasLost() || this.whitePlayer.hasLost();
 
-    /**
-     * Gets the winner of the game.
-     * @returns The colour of the winner.
-     * @throws Error if the game isn't over.
-     */
-    public getWinner(): Colour {
-        if (!this.isOver()) throw new Error("Can't get winner as game isn't over");
-        return this.blackPlayer.hasLost() ? Colour.WHITE : Colour.BLACK;
+        if (isOver) {
+            this.turnElement.innerText = this.blackPlayer.hasLost() ? "White won" : "Black won";
+            document.querySelector("#board")!.classList.add("disabled");
+        }
+        
+        return isOver;
     }
 }
