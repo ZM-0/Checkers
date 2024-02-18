@@ -22,4 +22,5 @@ const game: Game = new Game();
 // Handle game resetting
 document.querySelector("header button")!.addEventListener("click", () => {
     game.reset();
+    game.reset();
 });

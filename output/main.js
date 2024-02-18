@@ -16,4 +16,5 @@ const game = new Game();
 // Handle game resetting
 document.querySelector("header button").addEventListener("click", () => {
     game.reset();
+    game.reset();
 });
