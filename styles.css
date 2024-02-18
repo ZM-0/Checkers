@@ -13,12 +13,43 @@ html {
 body {
     display: block flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     height: 100vh;
     margin: 0;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     background-color: #F8F9FA;
+}
+
+/* Header */
+
+header {
+    display: block flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+header button {
+    display: inline flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: inherit;
+    font-size: 100%;
+    background-color: transparent;
+    color: inherit;
+}
+
+header button:enabled:hover {
+    cursor: pointer;
+    background-color: #DEE2E6;
+}
+
+header button span {
+    font-size: 36px !important;
 }
 
 /* Board Layout */

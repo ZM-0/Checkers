@@ -11,23 +11,9 @@ for (let row = 0; row < Board.SIZE; row++) {
     }
     colour = colour === Colour.BLACK ? Colour.WHITE : Colour.BLACK;
 }
-// ====================================================================================================
-// 
-// Cell User Input
-// 
-// ====================================================================================================
-for (let row = 0; row < Board.SIZE; row++) {
-    for (let column = 0; column < Board.SIZE; column++) {
-        const element = document.querySelector(`#cell-${row * Board.SIZE + column}`);
-        // Highlight valid moves
-        element.addEventListener("click", () => {
-        });
-    }
-}
 // Create a new game
 const game = new Game();
-console.log(game);
-// console.log(game.board);
-// const move: Move = new Move(game.board.get(2, 1).token!, game);
-// move.execute(game.board.get(3, 2));
-// console.log(game.board);
+// Handle game resetting
+document.querySelector("header button").addEventListener("click", () => {
+    game.reset();
+});

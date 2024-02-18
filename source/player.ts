@@ -1,4 +1,5 @@
 import { Board } from "./board.js";
+import { Cell } from "./cell.js";
 import { Colour } from "./colour.js";
 import { Token } from "./token.js";
 
@@ -32,6 +33,11 @@ export class Player {
     private readonly tokens: Token[] = [];
 
     /**
+     * The board being played on.
+     */
+    private readonly board: Board;
+
+    /**
      * Creates a new player.
      * @param colour The player's colour.
      * @param board The board being playe don.
@@ -39,14 +45,14 @@ export class Player {
     public constructor(colour: Colour, board: Board) {
         this.colour = colour;
         this.startCoordinate = colour === Colour.BLACK ? [5, 0] : [0, 1];
-        this.createTokens(board);
+        this.board = board;
+        this.createTokens();
     }
     
     /**
      * Creates the player's tokens.
-     * @param board The board being played on.
      */
-    private createTokens(board: Board) {
+    private createTokens() {
         for (let diagonal: number = 0; diagonal < Board.SIZE / 2; diagonal++) {
             for (let offset: number = 0; offset < Player.rowCount; offset++) {
                 const row: number = this.startCoordinate[0] + offset;
@@ -54,7 +60,7 @@ export class Player {
 
                 const token: Token = new Token(this.colour, row, column);
                 this.tokens.push(token);
-                board.get(row, column).token = token;
+                this.board.get(row, column).token = token;
             }
         }
     }
@@ -64,7 +70,6 @@ export class Player {
      * @returns A boolean indicating if the player has lost.
      */
     public hasLost(): boolean {
-        console.log("Player has tokens:", this.countAliveTokens());
         return this.countAliveTokens() === 0;
     }
 
@@ -74,5 +79,20 @@ export class Player {
      */
     private countAliveTokens(): number {
         return this.tokens.filter((token: Token): boolean => token.isAlive).length;
+    }
+
+    /**
+     * Resets the player's tokens.
+     */
+    public reset() {
+        for (const token of this.tokens) {
+            const oldCell: Cell = this.board.get(...token.position);
+            oldCell.token = null;
+            oldCell.element.replaceChildren();
+            token.reset();
+            const newCell: Cell = this.board.get(...token.position);
+            newCell.token = token;
+            newCell.element.append(token.element);
+        }
     }
 }

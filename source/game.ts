@@ -76,4 +76,15 @@ export class Game {
         
         return isOver;
     }
+
+    /**
+     * Resets the game.
+     */
+    public reset() {
+        this.blackPlayer.reset();
+        this.whitePlayer.reset();
+        this._turn = Colour.BLACK;
+        this.turnElement.innerText = "Black starts";
+        this.nextMove = null;
+    }
 }

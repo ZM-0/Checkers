@@ -26,6 +26,10 @@ export class Player {
      */
     tokens = [];
     /**
+     * The board being played on.
+     */
+    board;
+    /**
      * Creates a new player.
      * @param colour The player's colour.
      * @param board The board being playe don.
@@ -33,20 +37,20 @@ export class Player {
     constructor(colour, board) {
         this.colour = colour;
         this.startCoordinate = colour === Colour.BLACK ? [5, 0] : [0, 1];
-        this.createTokens(board);
+        this.board = board;
+        this.createTokens();
     }
     /**
      * Creates the player's tokens.
-     * @param board The board being played on.
      */
-    createTokens(board) {
+    createTokens() {
         for (let diagonal = 0; diagonal < Board.SIZE / 2; diagonal++) {
             for (let offset = 0; offset < Player.rowCount; offset++) {
                 const row = this.startCoordinate[0] + offset;
                 const column = (this.startCoordinate[1] + diagonal * (Player.rowCount - 1) + offset) % Board.SIZE;
                 const token = new Token(this.colour, row, column);
                 this.tokens.push(token);
-                board.get(row, column).token = token;
+                this.board.get(row, column).token = token;
             }
         }
     }
@@ -55,7 +59,6 @@ export class Player {
      * @returns A boolean indicating if the player has lost.
      */
     hasLost() {
-        console.log("Player has tokens:", this.countAliveTokens());
         return this.countAliveTokens() === 0;
     }
     /**
@@ -64,5 +67,19 @@ export class Player {
      */
     countAliveTokens() {
         return this.tokens.filter((token) => token.isAlive).length;
+    }
+    /**
+     * Resets the player's tokens.
+     */
+    reset() {
+        for (const token of this.tokens) {
+            const oldCell = this.board.get(...token.position);
+            oldCell.token = null;
+            oldCell.element.replaceChildren();
+            token.reset();
+            const newCell = this.board.get(...token.position);
+            newCell.token = token;
+            newCell.element.append(token.element);
+        }
     }
 }

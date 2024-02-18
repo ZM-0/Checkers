@@ -47,4 +47,12 @@ export class Token {
     atOtherEnd() {
         return this.colour === Colour.BLACK && this.position[0] === 0 || this.colour === Colour.WHITE && this.position[0] === Board.SIZE - 1;
     }
+    /**
+     * Resets the token to its initial position and state.
+     */
+    reset() {
+        this.isAlive = true;
+        this.isKing = false;
+        this.position = [...this.defaultPosition];
+    }
 }
