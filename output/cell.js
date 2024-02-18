@@ -84,7 +84,6 @@ export class Cell {
             game.nextMove = null;
             game.board.unfocusAll();
             game.board.unhighlightAll();
-            console.log(game);
         });
     }
     /**
