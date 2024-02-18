@@ -101,4 +101,8 @@ i.token.black-token {
         height: 80vw;
         width: 80vw;
     }
+
+    i.token {
+        font-size: 9vw;
+    }
 }
