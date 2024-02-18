@@ -76,7 +76,7 @@ header button span {
 }
 
 #board>div.highlight {
-    border: solid 4px #023E8A;
+    border: solid 4px #4CC9F0;
 }
 
 /* Tokens */
@@ -100,6 +100,10 @@ i.token.black-token {
     #board {
         height: 80vw;
         width: 80vw;
+    }
+
+    #board > div.highlight {
+        border-width: 2px;
     }
 
     i.token {
