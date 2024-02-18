@@ -93,3 +93,12 @@ i.token.white-token {
 i.token.black-token {
     color: #000;
 }
+
+/* Small Screen Styles */
+
+@media (max-width: 500px) {
+    #board {
+        height: 80vw;
+        width: 80vw;
+    }
+}
